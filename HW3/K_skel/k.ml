@@ -24,7 +24,7 @@ struct
 end
 
 (* Memory Signature *)
-module type MEM = 
+module type MEM =
 sig
   type 'a t
   exception Not_allocated
@@ -54,20 +54,20 @@ struct
   type 'a t = M of Loc.t * 'a content list
   let empty = M (Loc.base,[])
 
-  let rec replace_nth = fun l n c -> 
+  let rec replace_nth = fun l n c ->
     match l with
     | h::t -> if n = 1 then c :: t else h :: (replace_nth t (n - 1) c)
     | [] -> raise Not_allocated
 
   let load (M (boundary,storage)) loc =
     match (List.nth storage ((Loc.diff boundary loc) - 1)) with
-    | V v -> v 
+    | V v -> v
     | U -> raise Not_initialized
 
   let store (M (boundary,storage)) loc content =
     M (boundary, replace_nth storage (Loc.diff boundary loc) (V content))
 
-  let alloc (M (boundary,storage)) = 
+  let alloc (M (boundary,storage)) =
     (boundary, M (Loc.increase boundary 1, U :: storage))
 end
 
@@ -111,7 +111,7 @@ sig
   | ASSIGNF of exp * id * exp   (* assign to record field *)
   | READ of id
   | WRITE of exp
-    
+
   type program = exp
   type memory
   type env
@@ -161,7 +161,7 @@ struct
   | Bool of bool
   | Unit
   | Record of (id -> Loc.t)
-    
+
   type memory = value Mem.t
   type env = (id, env_entry) Env.t
   and  env_entry = Addr of Loc.t | Proc of id list * exp * env
@@ -201,13 +201,13 @@ struct
     try
       (match Env.lookup e x with
       | Addr l -> l
-      | Proc _ -> raise (Error "TypeError : not addr")) 
+      | Proc _ -> raise (Error "TypeError : not addr"))
     with Env.Not_bound -> raise (Error "Unbound")
 
   let lookup_env_proc e f =
     try
       (match Env.lookup e f with
-      | Addr _ -> raise (Error "TypeError : not proc") 
+      | Addr _ -> raise (Error "TypeError : not proc")
       | Proc (id, exp, env) -> (id, exp, env))
     with Env.Not_bound -> raise (Error "Unbound")
 
@@ -273,7 +273,7 @@ struct
       (Bool(not b), mem')
     | SEQ (e1, e2) ->
       let (_, mem') = eval mem env e1 in
-      eval mem' env e2 
+      eval mem' env e2
     | IF (ec, e1, e2) ->
       let (vc, mem') = eval mem env ec in
       if value_bool vc == true then
@@ -343,19 +343,21 @@ struct
                   in
                   fi i id_loc_list
       in
-        
+
       let rec assign_record = fun mem env mlist id_loc_list ->
           if mlist == [] then (mem, id_loc_list)
-          else 
+          else
               let (id, exp) = List.hd(mlist) in
               let (v, mem1) = eval mem env exp in
               let (l, mem2) = Mem.alloc mem1 in
               let mem3 = Mem.store mem2 l v in
               assign_record mem3 env (List.tl(mlist)) ((id, l)::id_loc_list)
       in
-      
-      let (mem', id_loc_list) = assign_record mem env mlist [] in
-      (Record(make_record_func(id_loc_list)), mem')
+
+      if mlist == [] then (Unit, mem)
+      else
+          let (mem', id_loc_list) = assign_record mem env mlist [] in
+          (Record(make_record_func(id_loc_list)), mem')
     | FIELD (e, id) ->
       let (v, mem') = eval mem env e in
       ((Mem.load mem' ((value_record v) id)), mem')
@@ -368,7 +370,7 @@ struct
       let (rfv, mem2) = eval mem1 env rfe in
       let mem3 = Mem.store mem2 ((value_record v) id) rfv in
       (rfv, mem3)
-    | READ x ->   (* Predefined *) 
+    | READ x ->   (* Predefined *)
       let v = Num (read_int()) in
       let l = lookup_env_loc env x in
       (v, Mem.store mem l v)
@@ -379,7 +381,7 @@ struct
       (v, mem')
     (*| _ -> failwith "Unimplemented"*)
 
-  let run (mem, env, pgm) = 
+  let run (mem, env, pgm) =
     let (v, _ ) = eval mem env pgm in
     v
 end
