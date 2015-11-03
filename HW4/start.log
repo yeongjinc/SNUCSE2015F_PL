@@ -1,0 +1,397 @@
+
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.014  000.014: --- VIM STARTING ---
+000.089  000.075: Allocated generic buffers
+000.357  000.268: locale set
+000.361  000.004: clipboard setup
+000.367  000.006: window checked
+001.956  001.589: inits 1
+001.965  000.009: parsing arguments
+001.966  000.001: expanding arguments
+004.879  002.913: shell init
+005.080  000.201: Termcap init
+005.093  000.013: inits 2
+005.202  000.109: init highlight
+005.757  000.045  000.045: sourcing /usr/local/share/vim/vim74/ftoff.vim
+006.075  000.198  000.198: sourcing /Users/yeongjin/.dotfiles/vim/bundle/Vundle.vim/autoload/vundle.vim
+006.333  000.164  000.164: sourcing /Users/yeongjin/.dotfiles/vim/bundle/Vundle.vim/autoload/vundle/config.vim
+009.917  002.557  002.557: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+025.725  000.077  000.077: sourcing /usr/local/share/vim/vim74/delmenu.vim
+026.741  000.027  000.027: sourcing /usr/local/share/vim/vim74/lang/menu_en_gb.latin1.vim
+026.819  000.010  000.010: sourcing /usr/local/Cellar/vim/7.4.898/share/vim/vim74/lang/menu_en_gb.latin1.vim
+026.824  000.055  000.045: sourcing /usr/local/share/vim/vim74/lang/menu_en_gb.utf-8.vim
+027.582  000.049  000.049: sourcing /usr/local/share/vim/vim74/autoload/paste.vim
+039.221  013.460  013.329: sourcing /usr/local/share/vim/vim74/menu.vim
+093.110  000.117  000.117: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-json/ftdetect/json.vim
+093.341  000.159  000.159: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-javascript/ftdetect/javascript.vim
+093.510  000.053  000.053: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/ftdetect/snippets.vim
+093.594  000.059  000.059: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/ftdetect/UltiSnips.vim
+094.214  022.833  022.445: sourcing /usr/local/share/vim/vim74/filetype.vim
+094.544  000.046  000.046: sourcing /usr/local/share/vim/vim74/ftplugin.vim
+094.852  000.038  000.038: sourcing /usr/local/share/vim/vim74/indent.vim
+096.305  000.246  000.246: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+096.900  000.182  000.182: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+099.112  003.837  003.409: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+099.912  004.710  000.873: sourcing /usr/local/share/vim/vim74/syntax/synload.vim
+099.942  004.924  000.214: sourcing /usr/local/share/vim/vim74/syntax/syntax.vim
+100.948  000.184  000.184: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+101.522  000.181  000.181: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+105.491  005.489  005.124: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+107.742  000.029  000.029: sourcing /usr/local/share/vim/vim74/filetype.vim
+108.168  000.016  000.016: sourcing /usr/local/share/vim/vim74/ftplugin.vim
+108.583  000.017  000.017: sourcing /usr/local/share/vim/vim74/filetype.vim
+108.986  000.014  000.014: sourcing /usr/local/share/vim/vim74/indent.vim
+109.199  103.765  053.858: sourcing $HOME/.vimrc
+109.207  000.240: sourcing vimrc file(s)
+109.514  000.113  000.113: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ag.vim/plugin/ag.vim
+109.881  000.221  000.221: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-over/plugin/over.vim
+117.217  007.204  007.204: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-easymotion/plugin/EasyMotion.vim
+120.379  003.041  003.041: sourcing /Users/yeongjin/.dotfiles/vim/bundle/tcomment_vim/plugin/tcomment.vim
+121.295  000.811  000.811: sourcing /Users/yeongjin/.dotfiles/vim/bundle/tagbar/plugin/tagbar.vim
+121.766  000.019  000.019: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/autoloclist.vim
+121.808  000.015  000.015: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/balloons.vim
+121.848  000.016  000.016: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/checker.vim
+121.888  000.017  000.017: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/cursor.vim
+121.952  000.018  000.018: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/highlighting.vim
+121.994  000.017  000.017: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/loclist.vim
+122.034  000.018  000.018: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/modemap.vim
+122.076  000.020  000.020: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/notifiers.vim
+122.118  000.019  000.019: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/registry.vim
+122.169  000.019  000.019: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/signs.vim
+122.778  000.392  000.392: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/autoload/syntastic/util.vim
+135.068  000.070  000.070: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/autoloclist.vim
+135.168  000.069  000.069: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/balloons.vim
+135.439  000.243  000.243: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/checker.vim
+135.593  000.125  000.125: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/cursor.vim
+135.725  000.105  000.105: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/highlighting.vim
+136.067  000.315  000.315: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/loclist.vim
+136.194  000.099  000.099: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/modemap.vim
+136.306  000.083  000.083: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/notifiers.vim
+136.619  000.289  000.289: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/registry.vim
+136.746  000.101  000.101: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/signs.vim
+137.992  015.802  013.911: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic.vim
+138.621  000.513  000.513: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-better-whitespace/plugin/better-whitespace.vim
+139.779  001.059  001.059: sourcing /Users/yeongjin/.dotfiles/vim/bundle/supertab/plugin/supertab.vim
+140.294  000.090  000.090: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/autoload/UltiSnips/map_keys.vim
+140.417  000.498  000.408: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/plugin/UltiSnips.vim
+140.852  000.335  000.335: sourcing /Users/yeongjin/.dotfiles/vim/bundle/YouCompleteMe/plugin/youcompleteme.vim
+140.991  000.043  000.043: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-snippets/plugin/vimsnippets.vim
+141.653  000.129  000.129: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/autoload/nerdtree.vim
+142.791  000.456  000.456: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/path.vim
+143.049  000.124  000.124: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/menu_controller.vim
+143.258  000.087  000.087: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/menu_item.vim
+143.489  000.113  000.113: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/key_map.vim
+143.811  000.202  000.202: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/bookmark.vim
+144.280  000.301  000.301: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/tree_file_node.vim
+144.759  000.351  000.351: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/tree_dir_node.vim
+145.138  000.258  000.258: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/opener.vim
+145.549  000.264  000.264: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/creator.vim
+145.965  000.113  000.113: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/flag_set.vim
+146.346  000.174  000.174: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/nerdtree.vim
+147.027  000.496  000.496: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/ui.vim
+147.314  000.063  000.063: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/event.vim
+147.594  000.088  000.088: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/notifier.vim
+148.488  000.679  000.679: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/autoload/nerdtree/ui_glue.vim
+163.467  000.111  000.111: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/nerdtree_plugin/exec_menuitem.vim
+163.865  000.369  000.369: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/nerdtree_plugin/fs_menu.vim
+164.290  023.212  018.834: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/plugin/NERD_tree.vim
+164.639  000.258  000.258: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-multiple-cursors/plugin/multiple_cursors.vim
+165.457  000.725  000.725: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-surround/plugin/surround.vim
+167.300  001.753  001.753: sourcing /Users/yeongjin/.dotfiles/vim/bundle/mru/plugin/mru.vim
+168.024  000.328  000.328: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ctrlp.vim/autoload/ctrlp/mrufiles.vim
+168.181  000.784  000.456: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ctrlp.vim/plugin/ctrlp.vim
+168.610  000.076  000.076: sourcing /usr/local/share/vim/vim74/plugin/getscriptPlugin.vim
+168.853  000.216  000.216: sourcing /usr/local/share/vim/vim74/plugin/gzip.vim
+169.205  000.325  000.325: sourcing /usr/local/share/vim/vim74/plugin/logiPat.vim
+169.434  000.201  000.201: sourcing /usr/local/share/vim/vim74/plugin/matchparen.vim
+170.066  000.604  000.604: sourcing /usr/local/share/vim/vim74/plugin/netrwPlugin.vim
+170.136  000.030  000.030: sourcing /usr/local/share/vim/vim74/plugin/rrhelper.vim
+170.209  000.041  000.041: sourcing /usr/local/share/vim/vim74/plugin/spellfile.vim
+170.402  000.162  000.162: sourcing /usr/local/share/vim/vim74/plugin/tarPlugin.vim
+170.542  000.106  000.106: sourcing /usr/local/share/vim/vim74/plugin/tohtml.vim
+170.776  000.202  000.202: sourcing /usr/local/share/vim/vim74/plugin/vimballPlugin.vim
+171.025  000.199  000.199: sourcing /usr/local/share/vim/vim74/plugin/zipPlugin.vim
+171.535  000.149  000.149: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/after/plugin/UltiSnips_after.vim
+171.639  003.571: loading plugins
+171.646  000.007: inits 3
+171.892  000.246: reading viminfo
+171.909  000.017: setting raw mode
+171.924  000.015: start termcap
+171.983  000.059: clearing screen
+174.084  002.101: opening buffers
+174.681  000.425  000.425: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/autoload/syntastic/log.vim
+175.316  000.807: BufEnter autocommands
+175.320  000.004: editing files in windows
+189.712  013.712  013.712: sourcing /Users/yeongjin/.dotfiles/vim/bundle/YouCompleteMe/autoload/youcompleteme.vim
+364.881  175.849: VimEnter autocommands
+364.888  000.007: before starting main loop
+365.015  000.127: first screen update
+365.016  000.001: --- VIM STARTED ---
+
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.004  000.004: --- VIM STARTING ---
+000.068  000.064: Allocated generic buffers
+000.302  000.234: locale set
+000.305  000.003: clipboard setup
+000.311  000.006: window checked
+000.742  000.431: inits 1
+000.748  000.006: parsing arguments
+000.749  000.001: expanding arguments
+004.661  003.912: shell init
+004.887  000.226: Termcap init
+004.900  000.013: inits 2
+005.011  000.111: init highlight
+005.484  000.039  000.039: sourcing /usr/local/share/vim/vim74/ftoff.vim
+005.765  000.193  000.193: sourcing /Users/yeongjin/.dotfiles/vim/bundle/Vundle.vim/autoload/vundle.vim
+006.018  000.163  000.163: sourcing /Users/yeongjin/.dotfiles/vim/bundle/Vundle.vim/autoload/vundle/config.vim
+009.895  002.847  002.847: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+022.554  000.074  000.074: sourcing /usr/local/share/vim/vim74/delmenu.vim
+023.544  000.026  000.026: sourcing /usr/local/share/vim/vim74/lang/menu_en_gb.latin1.vim
+023.614  000.009  000.009: sourcing /usr/local/Cellar/vim/7.4.898/share/vim/vim74/lang/menu_en_gb.latin1.vim
+023.619  000.049  000.040: sourcing /usr/local/share/vim/vim74/lang/menu_en_gb.utf-8.vim
+024.371  000.046  000.046: sourcing /usr/local/share/vim/vim74/autoload/paste.vim
+035.665  013.075  012.954: sourcing /usr/local/share/vim/vim74/menu.vim
+084.370  000.120  000.120: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-json/ftdetect/json.vim
+084.602  000.163  000.163: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-javascript/ftdetect/javascript.vim
+084.789  000.055  000.055: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/ftdetect/snippets.vim
+084.876  000.060  000.060: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/ftdetect/UltiSnips.vim
+085.300  018.936  018.538: sourcing /usr/local/share/vim/vim74/filetype.vim
+085.668  000.045  000.045: sourcing /usr/local/share/vim/vim74/ftplugin.vim
+086.014  000.038  000.038: sourcing /usr/local/share/vim/vim74/indent.vim
+088.598  000.444  000.444: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+089.653  000.332  000.332: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+093.209  006.500  005.724: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+094.404  007.865  001.365: sourcing /usr/local/share/vim/vim74/syntax/synload.vim
+094.444  008.264  000.399: sourcing /usr/local/share/vim/vim74/syntax/syntax.vim
+095.809  000.248  000.248: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+096.587  000.247  000.247: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+099.197  004.672  004.177: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+100.731  000.015  000.015: sourcing /usr/local/share/vim/vim74/filetype.vim
+101.033  000.011  000.011: sourcing /usr/local/share/vim/vim74/ftplugin.vim
+101.308  000.012  000.012: sourcing /usr/local/share/vim/vim74/filetype.vim
+101.579  000.009  000.009: sourcing /usr/local/share/vim/vim74/indent.vim
+101.720  096.515  048.122: sourcing $HOME/.vimrc
+101.727  000.201: sourcing vimrc file(s)
+101.944  000.087  000.087: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ag.vim/plugin/ag.vim
+102.237  000.176  000.176: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-over/plugin/over.vim
+108.360  006.023  006.023: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-easymotion/plugin/EasyMotion.vim
+111.570  003.105  003.105: sourcing /Users/yeongjin/.dotfiles/vim/bundle/tcomment_vim/plugin/tcomment.vim
+112.444  000.772  000.772: sourcing /Users/yeongjin/.dotfiles/vim/bundle/tagbar/plugin/tagbar.vim
+112.915  000.019  000.019: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/autoloclist.vim
+112.956  000.015  000.015: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/balloons.vim
+112.995  000.015  000.015: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/checker.vim
+113.035  000.018  000.018: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/cursor.vim
+113.091  000.018  000.018: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/highlighting.vim
+113.131  000.017  000.017: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/loclist.vim
+113.170  000.017  000.017: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/modemap.vim
+113.211  000.019  000.019: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/notifiers.vim
+113.252  000.018  000.018: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/registry.vim
+113.293  000.019  000.019: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/signs.vim
+113.951  000.410  000.410: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/autoload/syntastic/util.vim
+127.633  000.061  000.061: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/autoloclist.vim
+127.723  000.062  000.062: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/balloons.vim
+127.965  000.217  000.217: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/checker.vim
+128.105  000.114  000.114: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/cursor.vim
+128.230  000.100  000.100: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/highlighting.vim
+128.539  000.285  000.285: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/loclist.vim
+128.654  000.088  000.088: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/modemap.vim
+128.751  000.071  000.071: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/notifiers.vim
+129.064  000.290  000.290: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/registry.vim
+129.190  000.100  000.100: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/signs.vim
+130.462  017.146  015.348: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic.vim
+131.036  000.457  000.457: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-better-whitespace/plugin/better-whitespace.vim
+132.087  000.955  000.955: sourcing /Users/yeongjin/.dotfiles/vim/bundle/supertab/plugin/supertab.vim
+132.550  000.094  000.094: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/autoload/UltiSnips/map_keys.vim
+132.663  000.478  000.384: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/plugin/UltiSnips.vim
+132.799  000.043  000.043: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-snippets/plugin/vimsnippets.vim
+133.526  000.129  000.129: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/autoload/nerdtree.vim
+134.772  000.488  000.488: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/path.vim
+135.035  000.124  000.124: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/menu_controller.vim
+135.239  000.084  000.084: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/menu_item.vim
+135.466  000.111  000.111: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/key_map.vim
+135.789  000.205  000.205: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/bookmark.vim
+136.177  000.263  000.263: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/tree_file_node.vim
+136.655  000.354  000.354: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/tree_dir_node.vim
+136.992  000.219  000.219: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/opener.vim
+137.342  000.232  000.232: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/creator.vim
+137.516  000.056  000.056: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/flag_set.vim
+137.767  000.134  000.134: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/nerdtree.vim
+138.401  000.358  000.358: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/ui.vim
+138.563  000.040  000.040: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/event.vim
+138.753  000.054  000.054: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/notifier.vim
+139.340  000.427  000.427: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/autoload/nerdtree/ui_glue.vim
+155.425  000.110  000.110: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/nerdtree_plugin/exec_menuitem.vim
+155.822  000.370  000.370: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/nerdtree_plugin/fs_menu.vim
+156.269  023.386  019.628: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/plugin/NERD_tree.vim
+156.617  000.255  000.255: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-multiple-cursors/plugin/multiple_cursors.vim
+157.414  000.705  000.705: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-surround/plugin/surround.vim
+159.242  001.735  001.735: sourcing /Users/yeongjin/.dotfiles/vim/bundle/mru/plugin/mru.vim
+160.017  000.352  000.352: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ctrlp.vim/autoload/ctrlp/mrufiles.vim
+160.174  000.837  000.485: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ctrlp.vim/plugin/ctrlp.vim
+160.609  000.077  000.077: sourcing /usr/local/share/vim/vim74/plugin/getscriptPlugin.vim
+160.843  000.207  000.207: sourcing /usr/local/share/vim/vim74/plugin/gzip.vim
+161.215  000.345  000.345: sourcing /usr/local/share/vim/vim74/plugin/logiPat.vim
+161.444  000.201  000.201: sourcing /usr/local/share/vim/vim74/plugin/matchparen.vim
+162.076  000.603  000.603: sourcing /usr/local/share/vim/vim74/plugin/netrwPlugin.vim
+162.148  000.030  000.030: sourcing /usr/local/share/vim/vim74/plugin/rrhelper.vim
+162.222  000.042  000.042: sourcing /usr/local/share/vim/vim74/plugin/spellfile.vim
+162.414  000.161  000.161: sourcing /usr/local/share/vim/vim74/plugin/tarPlugin.vim
+162.554  000.106  000.106: sourcing /usr/local/share/vim/vim74/plugin/tohtml.vim
+162.728  000.143  000.143: sourcing /usr/local/share/vim/vim74/plugin/vimballPlugin.vim
+162.997  000.224  000.224: sourcing /usr/local/share/vim/vim74/plugin/zipPlugin.vim
+163.445  000.149  000.149: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/after/plugin/UltiSnips_after.vim
+163.543  003.193: loading plugins
+163.548  000.005: inits 3
+163.830  000.282: reading viminfo
+163.847  000.017: setting raw mode
+163.861  000.014: start termcap
+163.942  000.081: clearing screen
+165.806  001.864: opening buffers
+166.397  000.423  000.423: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/autoload/syntastic/log.vim
+167.042  000.813: BufEnter autocommands
+167.046  000.004: editing files in windows
+167.623  000.577: VimEnter autocommands
+167.628  000.005: before starting main loop
+167.721  000.093: first screen update
+167.723  000.002: --- VIM STARTED ---
+
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.004  000.004: --- VIM STARTING ---
+000.065  000.061: Allocated generic buffers
+000.292  000.227: locale set
+000.296  000.004: clipboard setup
+000.301  000.005: window checked
+000.718  000.417: inits 1
+000.724  000.006: parsing arguments
+000.725  000.001: expanding arguments
+003.559  002.834: shell init
+003.817  000.258: Termcap init
+003.834  000.017: inits 2
+003.994  000.160: init highlight
+005.017  000.105  000.105: sourcing /usr/local/share/vim/vim74/ftoff.vim
+005.513  000.317  000.317: sourcing /Users/yeongjin/.dotfiles/vim/bundle/Vundle.vim/autoload/vundle.vim
+005.891  000.194  000.194: sourcing /Users/yeongjin/.dotfiles/vim/bundle/Vundle.vim/autoload/vundle/config.vim
+010.299  003.318  003.318: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+022.560  000.066  000.066: sourcing /usr/local/share/vim/vim74/delmenu.vim
+023.466  000.025  000.025: sourcing /usr/local/share/vim/vim74/lang/menu_en_gb.latin1.vim
+023.535  000.008  000.008: sourcing /usr/local/Cellar/vim/7.4.898/share/vim/vim74/lang/menu_en_gb.latin1.vim
+023.540  000.048  000.040: sourcing /usr/local/share/vim/vim74/lang/menu_en_gb.utf-8.vim
+024.263  000.045  000.045: sourcing /usr/local/share/vim/vim74/autoload/paste.vim
+036.523  013.930  013.812: sourcing /usr/local/share/vim/vim74/menu.vim
+082.930  000.114  000.114: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-json/ftdetect/json.vim
+083.158  000.157  000.157: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-javascript/ftdetect/javascript.vim
+083.327  000.050  000.050: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/ftdetect/snippets.vim
+083.408  000.057  000.057: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/ftdetect/UltiSnips.vim
+083.807  021.009  020.631: sourcing /usr/local/share/vim/vim74/filetype.vim
+084.118  000.044  000.044: sourcing /usr/local/share/vim/vim74/ftplugin.vim
+084.412  000.036  000.036: sourcing /usr/local/share/vim/vim74/indent.vim
+085.835  000.232  000.232: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+086.393  000.177  000.177: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+088.493  003.674  003.265: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+089.273  004.525  000.851: sourcing /usr/local/share/vim/vim74/syntax/synload.vim
+089.302  004.733  000.208: sourcing /usr/local/share/vim/vim74/syntax/syntax.vim
+090.325  000.179  000.179: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+090.883  000.176  000.176: sourcing /usr/local/share/vim/vim74/syntax/syncolor.vim
+092.902  003.542  003.187: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-colors-solarized/colors/solarized.vim
+094.249  000.013  000.013: sourcing /usr/local/share/vim/vim74/filetype.vim
+094.510  000.010  000.010: sourcing /usr/local/share/vim/vim74/ftplugin.vim
+094.769  000.011  000.011: sourcing /usr/local/share/vim/vim74/filetype.vim
+095.020  000.008  000.008: sourcing /usr/local/share/vim/vim74/indent.vim
+095.154  090.780  043.444: sourcing $HOME/.vimrc
+095.159  000.385: sourcing vimrc file(s)
+095.352  000.081  000.081: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ag.vim/plugin/ag.vim
+095.609  000.161  000.161: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-over/plugin/over.vim
+101.495  005.796  005.796: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-easymotion/plugin/EasyMotion.vim
+104.648  003.051  003.051: sourcing /Users/yeongjin/.dotfiles/vim/bundle/tcomment_vim/plugin/tcomment.vim
+105.491  000.746  000.746: sourcing /Users/yeongjin/.dotfiles/vim/bundle/tagbar/plugin/tagbar.vim
+105.930  000.018  000.018: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/autoloclist.vim
+105.968  000.015  000.015: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/balloons.vim
+106.004  000.014  000.014: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/checker.vim
+106.042  000.017  000.017: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/cursor.vim
+106.099  000.016  000.016: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/highlighting.vim
+106.137  000.016  000.016: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/loclist.vim
+106.174  000.017  000.017: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/modemap.vim
+106.212  000.018  000.018: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/notifiers.vim
+106.250  000.017  000.017: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/registry.vim
+106.289  000.018  000.018: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/signs.vim
+106.895  000.387  000.387: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/autoload/syntastic/util.vim
+118.731  000.059  000.059: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/autoloclist.vim
+118.821  000.063  000.063: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/balloons.vim
+119.067  000.222  000.222: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/checker.vim
+119.207  000.114  000.114: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/cursor.vim
+119.325  000.093  000.093: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/highlighting.vim
+119.636  000.286  000.286: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/loclist.vim
+119.748  000.087  000.087: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/modemap.vim
+119.844  000.073  000.073: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/notifiers.vim
+120.162  000.295  000.295: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/registry.vim
+120.288  000.101  000.101: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic/signs.vim
+121.502  015.192  013.412: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/plugin/syntastic.vim
+122.069  000.455  000.455: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-better-whitespace/plugin/better-whitespace.vim
+123.123  000.956  000.956: sourcing /Users/yeongjin/.dotfiles/vim/bundle/supertab/plugin/supertab.vim
+123.558  000.092  000.092: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/autoload/UltiSnips/map_keys.vim
+123.670  000.445  000.353: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/plugin/UltiSnips.vim
+124.144  000.353  000.353: sourcing /Users/yeongjin/.dotfiles/vim/bundle/YouCompleteMe/plugin/youcompleteme.vim
+124.284  000.043  000.043: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-snippets/plugin/vimsnippets.vim
+124.948  000.129  000.129: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/autoload/nerdtree.vim
+126.084  000.455  000.455: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/path.vim
+126.343  000.126  000.126: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/menu_controller.vim
+126.550  000.085  000.085: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/menu_item.vim
+126.780  000.111  000.111: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/key_map.vim
+127.102  000.202  000.202: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/bookmark.vim
+127.492  000.262  000.262: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/tree_file_node.vim
+128.043  000.423  000.423: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/tree_dir_node.vim
+128.384  000.218  000.218: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/opener.vim
+128.735  000.231  000.231: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/creator.vim
+128.948  000.093  000.093: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/flag_set.vim
+129.200  000.114  000.114: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/nerdtree.vim
+129.644  000.308  000.308: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/ui.vim
+129.813  000.036  000.036: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/event.vim
+129.986  000.054  000.054: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/lib/nerdtree/notifier.vim
+130.549  000.425  000.425: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/autoload/nerdtree/ui_glue.vim
+143.951  000.119  000.119: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/nerdtree_plugin/exec_menuitem.vim
+144.361  000.371  000.371: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/nerdtree_plugin/fs_menu.vim
+144.788  020.419  016.657: sourcing /Users/yeongjin/.dotfiles/vim/bundle/nerdtree/plugin/NERD_tree.vim
+145.139  000.261  000.261: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-multiple-cursors/plugin/multiple_cursors.vim
+145.961  000.724  000.724: sourcing /Users/yeongjin/.dotfiles/vim/bundle/vim-surround/plugin/surround.vim
+147.805  001.748  001.748: sourcing /Users/yeongjin/.dotfiles/vim/bundle/mru/plugin/mru.vim
+148.547  000.341  000.341: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ctrlp.vim/autoload/ctrlp/mrufiles.vim
+148.705  000.802  000.461: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ctrlp.vim/plugin/ctrlp.vim
+149.134  000.077  000.077: sourcing /usr/local/share/vim/vim74/plugin/getscriptPlugin.vim
+149.374  000.213  000.213: sourcing /usr/local/share/vim/vim74/plugin/gzip.vim
+149.726  000.325  000.325: sourcing /usr/local/share/vim/vim74/plugin/logiPat.vim
+149.952  000.198  000.198: sourcing /usr/local/share/vim/vim74/plugin/matchparen.vim
+150.581  000.601  000.601: sourcing /usr/local/share/vim/vim74/plugin/netrwPlugin.vim
+150.651  000.032  000.032: sourcing /usr/local/share/vim/vim74/plugin/rrhelper.vim
+150.724  000.041  000.041: sourcing /usr/local/share/vim/vim74/plugin/spellfile.vim
+150.916  000.162  000.162: sourcing /usr/local/share/vim/vim74/plugin/tarPlugin.vim
+151.056  000.106  000.106: sourcing /usr/local/share/vim/vim74/plugin/tohtml.vim
+151.230  000.144  000.144: sourcing /usr/local/share/vim/vim74/plugin/vimballPlugin.vim
+151.497  000.228  000.228: sourcing /usr/local/share/vim/vim74/plugin/zipPlugin.vim
+152.463  000.290  000.290: sourcing /Users/yeongjin/.dotfiles/vim/bundle/ultisnips/after/plugin/UltiSnips_after.vim
+152.664  003.689: loading plugins
+152.676  000.012: inits 3
+153.182  000.506: reading viminfo
+153.210  000.028: setting raw mode
+153.232  000.022: start termcap
+153.372  000.140: clearing screen
+155.522  002.150: opening buffers
+156.429  000.655  000.655: sourcing /Users/yeongjin/.dotfiles/vim/bundle/syntastic/autoload/syntastic/log.vim
+157.325  001.148: BufEnter autocommands
+157.330  000.005: editing files in windows
+180.500  022.394  022.394: sourcing /Users/yeongjin/.dotfiles/vim/bundle/YouCompleteMe/autoload/youcompleteme.vim
+390.580  210.856: VimEnter autocommands
+390.588  000.008: before starting main loop
+390.729  000.141: first screen update
+390.730  000.001: --- VIM STARTED ---

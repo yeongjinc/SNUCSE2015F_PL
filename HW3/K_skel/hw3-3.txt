@@ -1,0 +1,124 @@
+
+let proc leaf(i) =
+	{left:=unit, value:=i, right:=unit}
+in
+
+let proc makeLtree(i, t) = 
+	{left:=t, value:=i, right:=unit}
+in
+
+let proc makeRtree(i, t) = 
+	{left:=unit, value:=i, right:=t}
+in
+
+let proc makeTree(i, t1, t2) = 
+	{left:=t1, value:=i, right:=t2}
+in
+
+let proc isEmpty(t) =
+	if t = unit then true
+	else false
+in
+
+let proc rTree(t) =
+	t.right
+in
+
+let proc lTree(t) =
+	t.left
+in
+
+let proc nodeVal(t) =
+	t.value
+in
+
+let proc dft(t) =
+	if isEmpty(t) then unit
+	else
+	(
+		write (nodeVal(t));
+		dft(lTree(t));
+		dft(rTree(t));
+		unit
+	)
+in
+
+
+let proc bft(t) = 
+	let Q := {tree:=t, next:=unit} in
+	let proc enQ(q, t) = 
+		let qtemp := q in
+		(
+			while (not (qtemp.next = unit)) do
+				qtemp := qtemp.next
+		);
+		let new := {tree:=t, next:=unit} in		
+		qtemp.next := new;
+		q
+	in
+	let proc deQ(q) = 
+		q.next
+	in
+
+	while (not (Q = unit)) do
+	(
+		let tr := Q.tree in
+		(
+		if isEmpty(lTree(tr)) = false then(
+			Q := enQ(Q, lTree(tr))
+		)else( 
+		)
+		);
+		(
+		if isEmpty(rTree(tr)) = false then(
+			Q := enQ(Q, rTree(tr))
+		)else(
+		)
+		);
+		write(nodeVal(tr));
+		Q := deQ(Q)
+	)
+in
+2015
+
+(*
+let testtree := 
+( 
+        makeTree(456, 
+                        makeLtree 
+                        (188, 
+                                makeTree 
+                                (77, 
+                                        makeLtree 
+                                        (12, 
+                                                makeTree 
+                                                (100, 
+                                                        makeLtree(10, leaf(1)) 
+                                                        , 
+                                                        makeRtree(20, leaf(2)) 
+                                                ) 
+                                        ), 
+                                        makeRtree(15, makeRtree(5, leaf(3))) 
+                                ) 
+                        ) 
+                        , 
+                        makeRtree 
+                        (64, 
+                                makeTree 
+                                (23, 
+                                        makeTree(15, leaf(13), makeLtree(48, leaf(66))), 
+                                        leaf(345) 
+                                ) 
+                        ) 
+        ) 
+) 
+in 
+let proc printbool(b) = 
+( 
+        if (b) then write(11111) 
+        else write(22222) 
+) 
+in 
+( 
+bft(testtree); dft(testtree); printbool(isEmpty(lTree(rTree(rTree(testtree))))); printbool(isEmpty(rTree(lTree(testtree)))); write(nodeVal(testtree)) 
+) *)

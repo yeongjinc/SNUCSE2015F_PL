@@ -1,0 +1,1388 @@
+FUNCTION  <SNR>87_OnCursorHold()
+Called 1 time
+Total time:   0.000299
+ Self time:   0.000069
+
+count  total (s)   self (s)
+    1   0.000097   0.000025   if !s:AllowedToCompleteInCurrentFile()
+                                return
+                              endif
+                            
+    1   0.000060   0.000021   call s:SetUpCompleteopt()
+    1   0.000138   0.000019   call s:OnFileReadyToParse()
+
+FUNCTION  4()
+Called 2 times
+Total time:   0.000109
+ Self time:   0.000021
+
+count  total (s)   self (s)
+    2   0.000021   0.000008     call syntastic#log#debug(g:_SYNTASTIC_DEBUG_NOTIFICATIONS, 'autoloclist: refresh')
+    2   0.000087   0.000012     call g:SyntasticAutoloclistNotifier.AutoToggle(a:loclist)
+
+FUNCTION  5()
+Called 2 times
+Total time:   0.000075
+ Self time:   0.000045
+
+count  total (s)   self (s)
+    2   0.000019   0.000007     call syntastic#log#debug(g:_SYNTASTIC_DEBUG_NOTIFICATIONS, 'autoloclist: toggle')
+    2   0.000009   0.000005     if !a:loclist.isEmpty()
+                                    if syntastic#util#var('auto_loc_list') == 1
+                                        call a:loclist.show()
+                                    endif
+                                else
+    2   0.000020   0.000006         if syntastic#util#var('auto_loc_list') > 0
+                            
+                                        "TODO: this will close the loc list window if one was opened by
+                                        "something other than syntastic
+    2              0.000002             lclose
+    2              0.000001         endif
+    2              0.000010     endif
+
+FUNCTION  7()
+Called 2 times
+Total time:   0.000009
+ Self time:   0.000009
+
+count  total (s)   self (s)
+    2              0.000009     return has('balloon_eval') && syntastic#util#var('enable_balloons')
+
+FUNCTION  syntastic#log#debug()
+Called 13 times
+Total time:   0.000109
+ Self time:   0.000075
+
+count  total (s)   self (s)
+   13   0.000089   0.000055     if !s:_isDebugEnabled(a:level)
+   13              0.000011         return
+                                endif
+                            
+                                let leader = s:_log_timestamp()
+                                call s:_logRedirect(1)
+                            
+                                if a:0 > 0
+                                    " filter out dictionary functions
+                                    echomsg leader . a:msg . ' ' . strtrans(string(type(a:1) == type({}) || type(a:1) == type([]) ? filter(copy(a:1), 'type(v:val) != type(function("tr"))') : a:1))
+                                else
+                                    echomsg leader . a:msg
+                                endif
+                            
+                                call s:_logRedirect(0)
+
+FUNCTION  <SNR>7_BMHash()
+Called 1 time
+Total time:   0.000061
+ Self time:   0.000061
+
+count  total (s)   self (s)
+                              " Make name all upper case, so that chars are between 32 and 96
+    1              0.000023   let nm = substitute(a:name, ".*", '\U\0', "")
+    1              0.000006   if has("ebcdic")
+                                " HACK: Replace all non alphabetics with 'Z'
+                                "       Just to make it work for now.
+                                let nm = substitute(nm, "[^A-Z]", 'Z', "g")
+                                let sp = char2nr('A') - 1
+                              else
+    1              0.000002     let sp = char2nr(' ')
+    1              0.000000   endif
+                              " convert first six chars into a number for sorting:
+    1              0.000017   return (char2nr(nm[0]) - sp) * 0x800000 + (char2nr(nm[1]) - sp) * 0x20000 + (char2nr(nm[2]) - sp) * 0x1000 + (char2nr(nm[3]) - sp) * 0x80 + (char2nr(nm[4]) - sp) * 0x20 + (char2nr(nm[5]) - sp)
+
+FUNCTION  <SNR>7_BMMunge()
+Called 1 time
+Total time:   0.000112
+ Self time:   0.000078
+
+count  total (s)   self (s)
+    1              0.000003   let name = a:fname
+    1              0.000003   if name == ''
+                                if !exists("g:menutrans_no_file")
+                                  let g:menutrans_no_file = "[No file]"
+                                endif
+                                let name = g:menutrans_no_file
+                              else
+    1              0.000010     let name = fnamemodify(name, ':p:~')
+    1              0.000001   endif
+                              " detach file name and separate it out:
+    1              0.000004   let name2 = fnamemodify(name, ':t')
+    1              0.000002   if a:bnum >= 0
+    1              0.000005     let name2 = name2 . ' (' . a:bnum . ')'
+    1              0.000001   endif
+    1   0.000048   0.000014   let name = name2 . "\t" . <SID>BMTruncName(fnamemodify(name,':h'))
+    1              0.000007   let name = escape(name, "\\. \t|")
+    1              0.000009   let name = substitute(name, "&", "&&", "g")
+    1              0.000005   let name = substitute(name, "\n", "^@", "g")
+    1              0.000002   return name
+
+FUNCTION  <SNR>17_LoadIndent()
+Called 2 times
+Total time:   0.001045
+ Self time:   0.000854
+
+count  total (s)   self (s)
+    2              0.000006     if exists("b:undo_indent")
+                                  exe b:undo_indent
+                                  unlet! b:undo_indent b:did_indent
+                                endif
+    2              0.000007     let s = expand("<amatch>")
+    2              0.000003     if s != ""
+    2              0.000003       if exists("b:did_indent")
+    1              0.000002 	unlet b:did_indent
+    1              0.000001       endif
+                            
+                                  " When there is a dot it is used to separate filetype names.  Thus for
+                                  " "aaa.bbb" load "indent/aaa.vim" and then "indent/bbb.vim".
+    4              0.000014       for name in split(s, '\.')
+    2   0.000980   0.000789 	exe 'runtime! indent/' . name . '.vim'
+    2              0.000002       endfor
+    2              0.000001     endif
+
+FUNCTION  <SNR>13_SelectJavascript()
+Called 2 times
+Total time:   0.000037
+ Self time:   0.000037
+
+count  total (s)   self (s)
+    2              0.000029   if getline(1) =~# '^#!.*/bin/env\s\+node\>'
+                                set ft=javascript
+                              endif
+
+FUNCTION  ctrlp#utils#writecache()
+Called 2 times
+Total time:   0.000478
+ Self time:   0.000442
+
+count  total (s)   self (s)
+    2   0.000065   0.000029 	if isdirectory(ctrlp#utils#mkdir(a:0 ? a:1 : s:cache_dir))
+    2              0.000404 		sil! cal writefile(a:lines, a:0 >= 2 ? a:2 : ctrlp#utils#cachefile())
+    2              0.000006 	en
+
+FUNCTION  <SNR>67_mergelists()
+Called 2 times
+Total time:   0.000341
+ Self time:   0.000131
+
+count  total (s)   self (s)
+    2   0.000231   0.000046 	let diskmrufs = ctrlp#utils#readfile(ctrlp#mrufiles#cachefile())
+    2              0.000052 	cal filter(diskmrufs, 'index(s:mrufs, v:val) < 0')
+    2              0.000012 	let mrufs = s:mrufs + diskmrufs
+    2   0.000042   0.000017 	retu s:chop(mrufs)
+
+FUNCTION  <SNR>36_QuitPreHook()
+Called 1 time
+Total time:   0.000091
+ Self time:   0.000054
+
+count  total (s)   self (s)
+    1   0.000048   0.000028     call syntastic#log#debug(g:_SYNTASTIC_DEBUG_AUTOCOMMANDS, 'autocmd: QuitPre, buffer ' . bufnr('') . ' = ' . string(bufname(str2nr(bufnr('')))))
+    1   0.000031   0.000014     let b:syntastic_skip_checks = get(b:, 'syntastic_skip_checks', 0) || !syntastic#util#var('check_on_wq')
+    1              0.000004     if get(w:, 'syntastic_loclist_set', 0)
+                                    call SyntasticLoclistHide()
+                                endif
+
+FUNCTION  ctrlp#utils#readfile()
+Called 2 times
+Total time:   0.000146
+ Self time:   0.000146
+
+count  total (s)   self (s)
+    2              0.000057 	if filereadable(a:file)
+    2              0.000059 		let data = readfile(a:file)
+    2              0.000012 		if empty(data) || type(data) != 3
+                            			unl data
+                            			let data = []
+                            		en
+    2              0.000003 		retu data
+                            	en
+                            	retu []
+
+FUNCTION  syntastic#util#stamp()
+Called 2 times
+Total time:   0.000035
+ Self time:   0.000035
+
+count  total (s)   self (s)
+    2              0.000035     return split( split(reltimestr(reltime(g:_SYNTASTIC_START)))[0], '\.' )
+
+FUNCTION  <SNR>85__isDebugEnabled_smart()
+Called 13 times
+Total time:   0.000034
+ Self time:   0.000034
+
+count  total (s)   self (s)
+   13              0.000032     return and(g:syntastic_debug, a:level)
+
+FUNCTION  30()
+Called 4 times
+Total time:   0.000042
+ Self time:   0.000016
+
+count  total (s)   self (s)
+    4   0.000039   0.000013     return syntastic#util#var('echo_current_error')
+
+FUNCTION  31()
+Called 2 times
+Total time:   0.000061
+ Self time:   0.000037
+
+count  total (s)   self (s)
+    2   0.000041   0.000017     if self.enabled() && !a:loclist.isEmpty()
+                                    call syntastic#log#debug(g:_SYNTASTIC_DEBUG_NOTIFICATIONS, 'cursor: refresh')
+                                    let b:syntastic_private_messages = copy(a:loclist.messages(bufnr('')))
+                                    let b:syntastic_private_line = -1
+                                    let b:syntastic_cursor_columns = a:loclist.getCursorColumns()
+                                    autocmd! syntastic CursorMoved
+                                    autocmd syntastic CursorMoved * call SyntasticRefreshCursor()
+                                endif
+
+FUNCTION  34()
+Called 4 times
+Total time:   0.000045
+ Self time:   0.000017
+
+count  total (s)   self (s)
+    4   0.000043   0.000015     return s:has_highlighting && syntastic#util#var('enable_highlighting')
+
+FUNCTION  35()
+Called 2 times
+Total time:   0.000148
+ Self time:   0.000093
+
+count  total (s)   self (s)
+    2   0.000025   0.000005     if self.enabled()
+    2   0.000021   0.000008         call syntastic#log#debug(g:_SYNTASTIC_DEBUG_NOTIFICATIONS, 'highlighting: refresh')
+    2   0.000021   0.000005         call self._reset()
+    2              0.000004         let buf = bufnr('')
+    2   0.000020   0.000014         let issues = filter(a:loclist.copyRaw(), 'v:val["bufnr"] == buf')
+    2              0.000002         for item in issues
+                                        let group = 'Syntastic' . get(item, 'subtype', '') . ( item['type'] ==? 'E' ? 'Error' : 'Warning' )
+                            
+                                        " The function `Syntastic_{filetype}_{checker}_GetHighlightRegex` is
+                                        " used to override default highlighting.
+                                        if has_key(item, 'hl')
+                                            call matchadd(group, '\%' . item['lnum'] . 'l' . item['hl'])
+                                        elseif get(item, 'col', 0)
+                                            if get(item, 'vcol', 0)
+                                                let lastcol = virtcol([item['lnum'], '$'])
+                                                let coltype = 'v'
+                                            else
+                                                let lastcol = col([item['lnum'], '$'])
+                                                let coltype = 'c'
+                                            endif
+                                            let lcol = min([lastcol, item['col']])
+                            
+                                            call matchadd(group, '\%' . item['lnum'] . 'l\%' . lcol . coltype)
+                                        endif
+                                    endfor
+    2              0.000001     endif
+
+FUNCTION  38()
+Called 2 times
+Total time:   0.000016
+ Self time:   0.000016
+
+count  total (s)   self (s)
+    2              0.000005     for match in getmatches()
+                                    if stridx(match['group'], 'Syntastic') == 0
+                                        call matchdelete(match['id'])
+                                    endif
+                                endfor
+
+FUNCTION  39()
+Called 1 time
+Total time:   0.000047
+ Self time:   0.000047
+
+count  total (s)   self (s)
+    1              0.000021     let newObj = copy(self)
+                            
+    1              0.000005     let llist = filter(copy(a:rawLoclist), 'v:val["valid"] == 1')
+                            
+    1              0.000002     for e in llist
+                                    if get(e, 'type', '') ==# ''
+                                        let e['type'] = 'E'
+                                    endif
+                                endfor
+                            
+    1              0.000002     let newObj._rawLoclist = llist
+    1              0.000001     let newObj._name = ''
+    1              0.000002     let newObj._owner = bufnr('')
+    1              0.000002     let newObj._sorted = 0
+    1              0.000002     let newObj._columns = g:syntastic_cursor_columns
+                            
+    1              0.000001     return newObj
+
+FUNCTION  <SNR>65_MRU_LoadList()
+Called 2 times
+Total time:   0.002655
+ Self time:   0.000378
+
+count  total (s)   self (s)
+                                " If the MRU file is present, then load the list of filenames. Otherwise
+                                " start with an empty list.
+    2              0.000058     if filereadable(g:MRU_File)
+    2              0.000097         let s:MRU_files = readfile(g:MRU_File)
+    2              0.000036         if s:MRU_files[0] =~# '^\s*" Most recently edited files in Vim'
+                                        " Generated by the previous version of the MRU plugin.
+                                        " Discard the list.
+                                        let s:MRU_files = []
+                                    elseif s:MRU_files[0] =~# '^#'
+                                        " Remove the comment line
+    2              0.000012             call remove(s:MRU_files, 0)
+    2              0.000002         else
+                                        " Unsupported format
+                                        let s:MRU_files = []
+                                    endif
+    2              0.000002     else
+                                    let s:MRU_files = []
+                                endif
+                            
+                                " Refresh the MRU menu with the latest list of filenames
+    2   0.002323   0.000046     call s:MRU_Refresh_Menu()
+
+FUNCTION  ctrlp#mrufiles#cachefile()
+Called 2 times
+Total time:   0.000039
+ Self time:   0.000039
+
+count  total (s)   self (s)
+    2              0.000016 	if !exists('s:cadir') || !exists('s:cafile')
+                            		let s:cadir = ctrlp#utils#cachedir().ctrlp#utils#lash().'mru'
+                            		let s:cafile = s:cadir.ctrlp#utils#lash().'cache.txt'
+                            	en
+    2              0.000004 	retu s:cafile
+
+FUNCTION  nerdtree#checkForBrowse()
+Called 2 times
+Total time:   0.000033
+ Self time:   0.000033
+
+count  total (s)   self (s)
+    2              0.000027     if a:dir != '' && isdirectory(a:dir)
+                                    call g:NERDTreeCreator.CreateSecondary(a:dir)
+                                endif
+
+FUNCTION  40()
+Called 2 times
+Total time:   0.000067
+ Self time:   0.000020
+
+count  total (s)   self (s)
+    2              0.000007     if !exists('b:syntastic_loclist') || empty(b:syntastic_loclist)
+    1   0.000052   0.000005         let b:syntastic_loclist = g:SyntasticLoclist.New([])
+    1              0.000001     endif
+    2              0.000002     return b:syntastic_loclist
+
+FUNCTION  43()
+Called 10 times
+Total time:   0.000022
+ Self time:   0.000022
+
+count  total (s)   self (s)
+   10              0.000018     return empty(self._rawLoclist)
+
+FUNCTION  44()
+Called 2 times
+Total time:   0.000051
+ Self time:   0.000022
+
+count  total (s)   self (s)
+    2              0.000004     if !exists('self._stamp')
+    1              0.000002         let self._stamp = []
+    1              0.000001         return 0
+                                endif
+    1   0.000041   0.000012     return syntastic#util#compareLexi(self._stamp, a:stamp) > 0
+
+FUNCTION  45()
+Called 2 times
+Total time:   0.000006
+ Self time:   0.000006
+
+count  total (s)   self (s)
+    2              0.000004     return copy(self._rawLoclist)
+
+FUNCTION  <SNR>87_OnBufferReadPre()
+Called 2 times
+Total time:   0.000054
+ Self time:   0.000054
+
+count  total (s)   self (s)
+    2              0.000012   let threshold = g:ycm_disable_for_files_larger_than_kb * 1024
+                            
+    2              0.000020   if threshold > 0 && getfsize( a:filename ) > threshold
+                                echohl WarningMsg | echomsg "YouCompleteMe is disabled in this buffer; " . "the file exceeded the max size (see YCM options)." | echohl None
+                                let b:ycm_largefile = 1
+                              endif
+
+FUNCTION  77()
+Called 2 times
+Total time:   0.001223
+ Self time:   0.000509
+
+count  total (s)   self (s)
+    2   0.000013   0.000007     if !a:loclist.isEmpty() && !a:loclist.isNewerThan([])
+                                    " loclist not fully constructed yet
+                                    return
+                                endif
+                            
+    2   0.000021   0.000008     call syntastic#log#debug(g:_SYNTASTIC_DEBUG_NOTIFICATIONS, 'notifiers: refresh')
+   12              0.000015     for type in self._enabled_types
+   10              0.000098         let class = substitute(type, '\m.*', 'Syntastic\u&Notifier', '')
+   10   0.000165   0.000073         if !has_key(g:{class}, 'enabled') || self._notifier[type].enabled()
+    8              0.000021             if index(s:_PERSISTENT_NOTIFIERS, type) > -1
+                                            " refresh only if loclist has changed since last call
+    2              0.000007                 if !exists('b:syntastic_private_' . type . '_stamp')
+    1              0.000004                     let b:syntastic_private_{type}_stamp = []
+    1              0.000001                 endif
+    2   0.000069   0.000014                 if a:loclist.isNewerThan(b:syntastic_private_{type}_stamp) || a:loclist.isEmpty()
+    2   0.000207   0.000012                     call self._notifier[type].refresh(a:loclist)
+    2   0.000061   0.000026                     let b:syntastic_private_{type}_stamp = syntastic#util#stamp()
+    2              0.000002                 endif
+    2              0.000002             else
+    6   0.000346   0.000028                 call self._notifier[type].refresh(a:loclist)
+    6              0.000004             endif
+    8              0.000002         endif
+   10              0.000007     endfor
+
+FUNCTION  <SNR>87_AllowedToCompleteInCurrentFile()
+Called 22 times
+Total time:   0.000851
+ Self time:   0.000851
+
+count  total (s)   self (s)
+   22              0.000262   if empty( &filetype ) || getbufvar( winbufnr( winnr() ), "&buftype" ) ==# 'nofile' || &filetype ==# 'qf'
+                                return 0
+                              endif
+                            
+   22              0.000073   if exists( 'b:ycm_largefile' )
+                                return 0
+                              endif
+                            
+   22              0.000160   let whitelist_allows = has_key( g:ycm_filetype_whitelist, '*' ) || has_key( g:ycm_filetype_whitelist, &filetype )
+   22              0.000103   let blacklist_allows = !has_key( g:ycm_filetype_blacklist, &filetype )
+                            
+   22              0.000061   return whitelist_allows && blacklist_allows
+
+FUNCTION  <SNR>87_OnBufferVisit()
+Called 6 times
+Total time:   0.172239
+ Self time:   0.162788
+
+count  total (s)   self (s)
+                              " We need to do this even when we are not allowed to complete in the current
+                              " file because we might be allowed to complete in the future! The canonical
+                              " example is creating a new buffer with :enew and then setting a filetype.
+    6   0.000067   0.000023   call s:SetUpYcmChangedTick()
+                            
+    6   0.000176   0.000023   if !s:AllowedToCompleteInCurrentFile()
+                                return
+                              endif
+                            
+    6   0.000157   0.000031   call s:SetUpCompleteopt()
+    6   0.000072   0.000023   call s:SetCompleteFunc()
+    6              0.162557   py ycm_state.OnBufferVisit()
+    6   0.009178   0.000099   call s:OnFileReadyToParse()
+
+FUNCTION  <SNR>87_OnFileReadyToParse()
+Called 19 times
+Total time:   0.009911
+ Self time:   0.009323
+
+count  total (s)   self (s)
+                              " We need to call this just in case there is no b:ycm_changetick; this can
+                              " happen for special buffers.
+   19   0.000325   0.000130   call s:SetUpYcmChangedTick()
+                            
+                              " Order is important here; we need to extract any done diagnostics before
+                              " reparsing the file again. If we sent the new parse request first, then
+                              " the response would always be pending when we called
+                              " UpdateDiagnosticNotifications.
+   19   0.000505   0.000112   call s:UpdateDiagnosticNotifications()
+                            
+   19              0.000088   let buffer_changed = b:changedtick != b:ycm_changedtick.file_ready_to_parse
+   19              0.000021   if buffer_changed
+    4              0.008687     py ycm_state.OnFileReadyToParse()
+    4              0.000017   endif
+   19              0.000072   let b:ycm_changedtick.file_ready_to_parse = b:changedtick
+
+FUNCTION  <SNR>65_MRU_add_files_to_menu()
+Called 4 times
+Total time:   0.003743
+ Self time:   0.003344
+
+count  total (s)   self (s)
+   44              0.000054     for fname in a:file_list
+                                    " Escape special characters in the filename
+   40              0.000256         let esc_fname = escape(fnamemodify(fname, ':t'), ".\\" . s:esc_filename_chars)
+   40              0.000192         let esc_fname = substitute(esc_fname, '&', '&&', 'g')
+                            
+                                    " Truncate the directory name if it is long
+   40              0.000128         let dir_name = fnamemodify(fname, ':h')
+   40              0.000080         let len = strlen(dir_name)
+                                    " Shorten long file names by adding only few characters from
+                                    " the beginning and end.
+   40              0.000046         if len > 30
+   11              0.000057             let dir_name = strpart(dir_name, 0, 10) . '...' .  strpart(dir_name, len - 20)
+   11              0.000009         endif
+   40              0.000315         let esc_dir_name = escape(dir_name, ".\\" . s:esc_filename_chars)
+   40              0.000205         let esc_dir_name = substitute(esc_dir_name, '&', '&&', 'g')
+                            
+   40              0.000209 	let menu_path = '&File.&Recent\ Files.' . a:prefix . esc_fname . '\ (' . esc_dir_name . ')'
+   40   0.000568   0.000169 	let esc_mfname = s:MRU_escape_filename(fname)
+   40              0.000833         exe 'anoremenu <silent> ' . menu_path . " :call <SID>MRU_Edit_File('" . esc_mfname . "', 1)<CR>"
+   40              0.000424 	exe 'tmenu ' . menu_path . ' Edit file ' . esc_mfname
+   40              0.000041     endfor
+
+FUNCTION  <SNR>67_record()
+Called 5 times
+Total time:   0.001297
+ Self time:   0.000173
+
+count  total (s)   self (s)
+    5              0.000020 	if s:locked | retu | en
+    5              0.000017 	let bufnr = a:bufnr + 0
+    5              0.000016 	let bufname = bufname(bufnr)
+    5              0.000016 	if bufnr > 0 && !empty(bufname)
+    5              0.000031 		cal filter(s:mrbs, 'v:val != bufnr')
+    5              0.000014 		cal insert(s:mrbs, bufnr)
+    5   0.001163   0.000039 		cal s:addtomrufs(bufname)
+    5              0.000004 	en
+
+FUNCTION  93()
+Called 4 times
+Total time:   0.000059
+ Self time:   0.000027
+
+count  total (s)   self (s)
+    4   0.000057   0.000025     return has('signs') && syntastic#util#var('enable_signs')
+
+FUNCTION  94()
+Called 2 times
+Total time:   0.000195
+ Self time:   0.000041
+
+count  total (s)   self (s)
+    2   0.000021   0.000008     call syntastic#log#debug(g:_SYNTASTIC_DEBUG_NOTIFICATIONS, 'signs: refresh')
+    2   0.000025   0.000010     let old_signs = copy(self._bufSignIds())
+    2   0.000028   0.000005     if self.enabled()
+    2   0.000087   0.000008         call self._signErrors(a:loclist)
+    2              0.000002     endif
+    2   0.000031   0.000007     call self._removeSigns(old_signs)
+
+FUNCTION  96()
+Called 2 times
+Total time:   0.000079
+ Self time:   0.000075
+
+count  total (s)   self (s)
+    2              0.000004     let loclist = a:loclist
+    2   0.000008   0.000004     if !loclist.isEmpty()
+                            
+                                    let buf = bufnr('')
+                                    if !bufloaded(buf)
+                                        " signs can be placed only in loaded buffers
+                                        return
+                                    endif
+                            
+                                    " errors come first, so that they are not masked by warnings
+                                    let issues = copy(loclist.errors())
+                                    call extend(issues, loclist.warnings())
+                                    call filter(issues, 'v:val["bufnr"] == buf')
+                                    let seen = {}
+                            
+                                    for i in issues
+                                        if i['lnum'] > 0 && !has_key(seen, i['lnum'])
+                                            let seen[i['lnum']] = 1
+                            
+                                            let sign_severity = i['type'] ==? 'W' ? 'Warning' : 'Error'
+                                            let sign_subtype = get(i, 'subtype', '')
+                                            let sign_type = 'Syntastic' . sign_subtype . sign_severity
+                            
+                                            execute 'sign place ' . s:next_sign_id . ' line=' . i['lnum'] . ' name=' . sign_type . ' buffer=' . i['bufnr']
+                                            call add(self._bufSignIds(), s:next_sign_id)
+                                            let s:next_sign_id += 1
+                                        endif
+                                    endfor
+                                endif
+
+FUNCTION  97()
+Called 2 times
+Total time:   0.000024
+ Self time:   0.000024
+
+count  total (s)   self (s)
+    2              0.000004     if has('signs')
+    2              0.000006         for s in reverse(copy(a:ids))
+                                        execute 'sign unplace ' . s
+                                        call remove(self._bufSignIds(), index(self._bufSignIds(), s))
+                                    endfor
+    2              0.000001     endif
+
+FUNCTION  98()
+Called 2 times
+Total time:   0.000015
+ Self time:   0.000015
+
+count  total (s)   self (s)
+    2              0.000005     if !exists('b:syntastic_private_sign_ids')
+    1              0.000002         let b:syntastic_private_sign_ids = []
+    1              0.000001     endif
+    2              0.000003     return b:syntastic_private_sign_ids
+
+FUNCTION  <SNR>7_BMFilename()
+Called 1 time
+Total time:   0.000284
+ Self time:   0.000111
+
+count  total (s)   self (s)
+    1              0.000006   if isdirectory(a:name)
+                                return
+                              endif
+    1   0.000129   0.000017   let munge = <SID>BMMunge(a:name, a:num)
+    1   0.000078   0.000017   let hash = <SID>BMHash(munge)
+    1              0.000002   if s:bmenu_short == 0
+    1              0.000008     let name = 'an ' . g:bmenu_priority . '.' . hash . ' &Buffers.' . munge
+    1              0.000001   else
+                                let name = 'an ' . g:bmenu_priority . '.' . hash . '.' . hash . ' &Buffers.' . <SID>BMHash2(munge) . munge
+                              endif
+                              " set 'cpo' to include the <CR>
+    1              0.000005   let cpo_save = &cpo
+    1              0.000009   set cpo&vim
+    1              0.000027   exe name . ' :confirm b' . a:num . '<CR>'
+    1              0.000008   let &cpo = cpo_save
+
+FUNCTION  syntastic#util#var()
+Called 15 times
+Total time:   0.000117
+ Self time:   0.000117
+
+count  total (s)   self (s)
+   15              0.000111     return exists('b:syntastic_' . a:name) ? b:syntastic_{a:name} : exists('g:syntastic_' . a:name) ? g:syntastic_{a:name} : a:0 > 0 ? a:1 : ''
+
+FUNCTION  syntastic#util#compareLexi()
+Called 1 time
+Total time:   0.000029
+ Self time:   0.000029
+
+count  total (s)   self (s)
+    2              0.000008     for idx in range(max([len(a:a), len(a:b)]))
+    2              0.000005         let a_element = str2nr(get(a:a, idx, 0))
+    2              0.000005         let b_element = str2nr(get(a:b, idx, 0))
+    2              0.000002         if a_element != b_element
+    1              0.000001             return a_element > b_element ? 1 : -1
+                                    endif
+    1              0.000001     endfor
+                                " still here, thus everything matched
+                                return 0
+
+FUNCTION  ctrlp#utils#mkdir()
+Called 2 times
+Total time:   0.000036
+ Self time:   0.000036
+
+count  total (s)   self (s)
+    2              0.000022 	if exists('*mkdir') && !isdirectory(a:dir)
+                            		sil! cal mkdir(a:dir, 'p')
+                            	en
+    2              0.000004 	retu a:dir
+
+FUNCTION  <SNR>67_chop()
+Called 2 times
+Total time:   0.000025
+ Self time:   0.000025
+
+count  total (s)   self (s)
+    2              0.000022 	if len(a:mrufs) > {s:max} | cal remove(a:mrufs, {s:max}, -1) | en
+    2              0.000003 	retu a:mrufs
+
+FUNCTION  <SNR>65_MRU_AddFile()
+Called 2 times
+Total time:   0.005643
+ Self time:   0.000536
+
+count  total (s)   self (s)
+    2              0.000004     if s:mru_list_locked
+                                    " MRU list is currently locked
+                                    return
+                                endif
+                            
+                                " Get the full path to the filename
+    2              0.000107     let fname = fnamemodify(bufname(a:acmd_bufnr + 0), ':p')
+    2              0.000007     if fname == ''
+                                    return
+                                endif
+                            
+                                " Skip temporary buffers with buftype set. The buftype is set for buffers
+                                " used by plugins.
+    2              0.000005     if &buftype != ''
+                                    return
+                                endif
+                            
+    2              0.000004     if g:MRU_Include_Files != ''
+                                    " If MRU_Include_Files is set, include only files matching the
+                                    " specified pattern
+                                    if fname !~# g:MRU_Include_Files
+                                        return
+                                    endif
+                                endif
+                            
+    2              0.000004     if g:MRU_Exclude_Files != ''
+                                    " Do not add files matching the pattern specified in the
+                                    " MRU_Exclude_Files to the MRU list
+                                    if fname =~# g:MRU_Exclude_Files
+                                        return
+                                    endif
+                                endif
+                            
+                                " If the filename is not already present in the MRU list and is not
+                                " readable then ignore it
+    2              0.000021     let idx = index(s:MRU_files, fname)
+    2              0.000010     if idx == -1
+    1              0.000020         if !filereadable(fname)
+                                        " File is not readable and is not in the MRU list
+                                        return
+                                    endif
+    1              0.000002     endif
+                            
+                                " Load the latest MRU file list
+    2   0.002685   0.000030     call s:MRU_LoadList()
+                            
+                                " Remove the new file name from the existing MRU list (if already present)
+    2              0.000034     call filter(s:MRU_files, 'v:val !=# fname')
+                            
+                                " Add the new file list to the beginning of the updated old file list
+    2              0.000007     call insert(s:MRU_files, fname, 0)
+                            
+                                " Trim the list
+    2              0.000004     if len(s:MRU_files) > g:MRU_Max_Entries
+                                    call remove(s:MRU_files, g:MRU_Max_Entries, -1)
+                                endif
+                            
+                                " Save the updated MRU list
+    2   0.000365   0.000023     call s:MRU_SaveList()
+                            
+                                " Refresh the MRU menu
+    2   0.002128   0.000018     call s:MRU_Refresh_Menu()
+                            
+                                " If the MRU window is open, update the displayed MRU list
+    2              0.000003     let bname = '__MRU_Files__'
+    2              0.000138     let winnum = bufwinnr(bname)
+    2              0.000004     if winnum != -1
+                                    let cur_winnr = winnr()
+                                    call s:MRU_Open_Window()
+                                    if winnr() != cur_winnr
+                                        exe cur_winnr . 'wincmd w'
+                                    endif
+                                endif
+
+FUNCTION  <SNR>87_SetCompleteFunc()
+Called 6 times
+Total time:   0.000049
+ Self time:   0.000049
+
+count  total (s)   self (s)
+    6              0.000026   let &completefunc = 'youcompleteme#Complete'
+    6              0.000018   let &l:completefunc = 'youcompleteme#Complete'
+
+FUNCTION  <SNR>87_OnBufferUnload()
+Called 3 times
+Total time:   0.008569
+ Self time:   0.008450
+
+count  total (s)   self (s)
+    3   0.000148   0.000029   if !s:AllowedToCompleteInCurrentFile() || empty( a:deleted_buffer_file )
+                                return
+                              endif
+                            
+    3              0.008405   py ycm_state.OnBufferUnload( vim.eval( 'a:deleted_buffer_file' ) )
+
+FUNCTION  <SNR>87_UpdateDiagnosticNotifications()
+Called 19 times
+Total time:   0.000393
+ Self time:   0.000294
+
+count  total (s)   self (s)
+   19   0.000301   0.000202   let should_display_diagnostics = g:ycm_show_diagnostics_ui && s:DiagnosticUiSupportedForCurrentFiletype()
+                            
+   19              0.000036   if !should_display_diagnostics
+   19              0.000019     return
+                              endif
+                            
+                              py ycm_state.UpdateDiagnosticInterface()
+
+FUNCTION  <SNR>65_MRU_SaveList()
+Called 2 times
+Total time:   0.000342
+ Self time:   0.000342
+
+count  total (s)   self (s)
+    2              0.000003     let l = []
+    2              0.000007     call add(l, '# Most recently edited files in Vim (version 3.0)')
+    2              0.000010     call extend(l, s:MRU_files)
+    2              0.000319     call writefile(l, g:MRU_File)
+
+FUNCTION  <SNR>71_Highlight_Matching_Pair()
+Called 12 times
+Total time:   0.002129
+ Self time:   0.002129
+
+count  total (s)   self (s)
+                              " Remove any previous match.
+   12              0.000132   if exists('w:paren_hl_on') && w:paren_hl_on
+    1              0.000006     silent! call matchdelete(3)
+    1              0.000004     let w:paren_hl_on = 0
+    1              0.000002   endif
+                            
+                              " Avoid that we remove the popup menu.
+                              " Return when there are no colors (looks like the cursor jumps).
+   12              0.000082   if pumvisible() || (&t_Co < 8 && !has("gui_running"))
+                                return
+                              endif
+                            
+                              " Get the character under the cursor and check if it's in 'matchpairs'.
+   12              0.000061   let c_lnum = line('.')
+   12              0.000041   let c_col = col('.')
+   12              0.000021   let before = 0
+                            
+   12              0.000053   let text = getline(c_lnum)
+   12              0.000059   let c = text[c_col - 1]
+   12              0.000380   let plist = split(&matchpairs, '.\zs[:,]')
+   12              0.000059   let i = index(plist, c)
+   12              0.000019   if i < 0
+                                " not found, in Insert mode try character before the cursor
+   11              0.000074     if c_col > 1 && (mode() == 'i' || mode() == 'R')
+                                  let before = 1
+                                  let c = text[c_col - 2]
+                                  let i = index(plist, c)
+                                endif
+   11              0.000012     if i < 0
+                                  " not found, nothing to do
+   11              0.000017       return
+                                endif
+                              endif
+                            
+                              " Figure out the arguments for searchpairpos().
+    1              0.000002   if i % 2 == 0
+                                let s_flags = 'nW'
+                                let c2 = plist[i + 1]
+                              else
+    1              0.000002     let s_flags = 'nbW'
+    1              0.000002     let c2 = c
+    1              0.000004     let c = plist[i - 1]
+    1              0.000001   endif
+    1              0.000003   if c == '['
+                                let c = '\['
+                                let c2 = '\]'
+                              endif
+                            
+                              " Find the match.  When it was just before the cursor move it there for a
+                              " moment.
+    1              0.000002   if before > 0
+                                let has_getcurpos = exists("*getcurpos")
+                                if has_getcurpos
+                                  " getcurpos() is more efficient but doesn't exist before 7.4.313.
+                                  let save_cursor = getcurpos()
+                                else
+                                  let save_cursor = winsaveview()
+                                endif
+                                call cursor(c_lnum, c_col - before)
+                              endif
+                            
+                              " Build an expression that detects whether the current cursor position is in
+                              " certain syntax types (string, comment, etc.), for use as searchpairpos()'s
+                              " skip argument.
+                              " We match "escape" for special items, such as lispEscapeSpecial.
+    1              0.000007   let s_skip = '!empty(filter(map(synstack(line("."), col(".")), ''synIDattr(v:val, "name")''), ' . '''v:val =~? "string\\|character\\|singlequote\\|escape\\|comment"''))'
+                              " If executing the expression determines that the cursor is currently in
+                              " one of the syntax types, then we want searchpairpos() to find the pair
+                              " within those syntax types (i.e., not skip).  Otherwise, the cursor is
+                              " outside of the syntax types and s_skip should keep its value so we skip any
+                              " matching pair inside the syntax types.
+    1              0.000284   execute 'if' s_skip '| let s_skip = 0 | endif'
+                            
+                              " Limit the search to lines visible in the window.
+    1              0.000005   let stoplinebottom = line('w$')
+    1              0.000003   let stoplinetop = line('w0')
+    1              0.000002   if i % 2 == 0
+                                let stopline = stoplinebottom
+                              else
+    1              0.000003     let stopline = stoplinetop
+    1              0.000001   endif
+                            
+                              " Limit the search time to 300 msec to avoid a hang on very long lines.
+                              " This fails when a timeout is not supported.
+    1              0.000006   if mode() == 'i' || mode() == 'R'
+                                let timeout = exists("b:matchparen_insert_timeout") ? b:matchparen_insert_timeout : g:matchparen_insert_timeout
+                              else
+    1              0.000007     let timeout = exists("b:matchparen_timeout") ? b:matchparen_timeout : g:matchparen_timeout
+    1              0.000001   endif
+    1              0.000002   try
+    1              0.000222     let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline, timeout)
+    1              0.000003   catch /E118/
+                                " Can't use the timeout, restrict the stopline a bit more to avoid taking
+                                " a long time on closed folds and long lines.
+                                " The "viewable" variables give a range in which we can scroll while
+                                " keeping the cursor at the same position.
+                                " adjustedScrolloff accounts for very large numbers of scrolloff.
+                                let adjustedScrolloff = min([&scrolloff, (line('w$') - line('w0')) / 2])
+                                let bottom_viewable = min([line('$'), c_lnum + &lines - adjustedScrolloff - 2])
+                                let top_viewable = max([1, c_lnum-&lines+adjustedScrolloff + 2])
+                                " one of these stoplines will be adjusted below, but the current values are
+                                " minimal boundaries within the current window
+                                if i % 2 == 0
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = min([line2byte("$"), line2byte(".") + col(".") + &smc * 2])
+                            	let stopline = min([bottom_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = min([bottom_viewable, c_lnum + 100])
+                                  endif
+                                  let stoplinebottom = stopline
+                                else
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = max([1, line2byte(".") + col(".") - &smc * 2])
+                            	let stopline = max([top_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = max([top_viewable, c_lnum - 100])
+                                  endif
+                                  let stoplinetop = stopline
+                                endif
+                                let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline)
+                              endtry
+                            
+    1              0.000002   if before > 0
+                                if has_getcurpos
+                                  call setpos('.', save_cursor)
+                                else
+                                  call winrestview(save_cursor)
+                                endif
+                              endif
+                            
+                              " If a match is found setup match highlighting.
+    1              0.000005   if m_lnum > 0 && m_lnum >= stoplinetop && m_lnum <= stoplinebottom 
+    1              0.000004     if exists('*matchaddpos')
+    1              0.000022       call matchaddpos('MatchParen', [[c_lnum, c_col - before], [m_lnum, m_col]], 10, 3)
+    1              0.000001     else
+                                  exe '3match MatchParen /\(\%' . c_lnum . 'l\%' . (c_col - before) . 'c\)\|\(\%' . m_lnum . 'l\%' . m_col . 'c\)/'
+                                endif
+    1              0.000003     let w:paren_hl_on = 1
+    1              0.000001   endif
+
+FUNCTION  <SNR>87_SetUpYcmChangedTick()
+Called 25 times
+Total time:   0.000239
+ Self time:   0.000239
+
+count  total (s)   self (s)
+   25              0.000222   let b:ycm_changedtick  = get( b:, 'ycm_changedtick', {   'file_ready_to_parse' : -1, } )
+
+FUNCTION  <SNR>16_LoadFTPlugin()
+Called 2 times
+Total time:   0.006677
+ Self time:   0.003666
+
+count  total (s)   self (s)
+    2              0.000009     if exists("b:undo_ftplugin")
+    1              0.000017       exe b:undo_ftplugin
+    1              0.000003       unlet! b:undo_ftplugin b:did_ftplugin
+    1              0.000001     endif
+                            
+    2              0.000009     let s = expand("<amatch>")
+    2              0.000004     if s != ""
+    2              0.000019       if &cpo =~# "S" && exists("b:did_ftplugin")
+                            	" In compatible mode options are reset to the global values, need to
+                            	" set the local values also when a plugin was already used.
+                            	unlet b:did_ftplugin
+                                  endif
+                            
+                                  " When there is a dot it is used to separate filetype names.  Thus for
+                                  " "aaa.bbb" load "aaa" and then "bbb".
+    4              0.000018       for name in split(s, '\.')
+    2   0.006563   0.003552 	exe 'runtime! ftplugin/' . name . '.vim ftplugin/' . name . '_*.vim ftplugin/' . name . '/*.vim'
+    2              0.000005       endfor
+    2              0.000001     endif
+
+FUNCTION  HasPaste()
+Called 16 times
+Total time:   0.000163
+ Self time:   0.000163
+
+count  total (s)   self (s)
+   16              0.000060   if &paste
+                                return 'PASTE MODE  '
+                              endif
+   16              0.000017   return ''
+
+FUNCTION  <SNR>67_addtomrufs()
+Called 5 times
+Total time:   0.001124
+ Self time:   0.000757
+
+count  total (s)   self (s)
+    5              0.000144 	let fn = fnamemodify(a:fname, ':p')
+    5              0.000047 	let fn = exists('+ssl') ? tr(fn, '/', '\') : fn
+    5              0.000366 	if ( !empty({s:in}) && fn !~# {s:in} ) || ( !empty({s:ex}) && fn =~# {s:ex} ) || !empty(getbufvar('^'.fn.'$', '&bt')) || !filereadable(fn) | retu
+                            	en
+    5              0.000036 	let idx = index(s:mrufs, fn, 0, !{s:cseno})
+    5              0.000006 	if idx
+    4              0.000047 		cal filter(s:mrufs, 'v:val !='.( {s:cseno} ? '#' : '?' ).' fn')
+    4              0.000011 		cal insert(s:mrufs, fn)
+    4              0.000013 		if {s:soup} && idx < 0
+    1   0.000402   0.000035 			cal s:savetofile(s:mergelists())
+    1              0.000001 		en
+    4              0.000002 	en
+
+FUNCTION  <SNR>36_BufReadPostHook()
+Called 2 times
+Total time:   0.000030
+ Self time:   0.000030
+
+count  total (s)   self (s)
+    2              0.000005     if g:syntastic_check_on_open
+                                    call syntastic#log#debug(g:_SYNTASTIC_DEBUG_AUTOCOMMANDS, 'autocmd: BufReadPost, buffer ' . bufnr('') . ' = ' . string(bufname(str2nr(bufnr('')))))
+                                    call s:UpdateErrors(1, [])
+                                endif
+
+FUNCTION  <SNR>7_BMAdd()
+Called 1 time
+Total time:   0.000340
+ Self time:   0.000056
+
+count  total (s)   self (s)
+    1              0.000003   if s:bmenu_wait == 0
+                                " when adding too many buffers, redraw in short format
+    1              0.000003     if s:bmenu_count == &menuitems && s:bmenu_short == 0
+                                  call s:BMShow()
+                                else
+    1   0.000319   0.000035       call <SID>BMFilename(expand("<afile>"), expand("<abuf>"))
+    1              0.000003       let s:bmenu_count = s:bmenu_count + 1
+    1              0.000001     endif
+    1              0.000000   endif
+
+FUNCTION  <SNR>19_SynSet()
+Called 2 times
+Total time:   0.004136
+ Self time:   0.001945
+
+count  total (s)   self (s)
+                              " clear syntax for :set syntax=OFF  and any syntax name that doesn't exist
+    2              0.000006   syn clear
+    2              0.000005   if exists("b:current_syntax")
+                                unlet b:current_syntax
+                              endif
+                            
+    2              0.000006   let s = expand("<amatch>")
+    2              0.000004   if s == "ON"
+                                " :set syntax=ON
+                                if &filetype == ""
+                                  echohl ErrorMsg
+                                  echo "filetype unknown"
+                                  echohl None
+                                endif
+                                let s = &filetype
+                              elseif s == "OFF"
+                                let s = ""
+                              endif
+                            
+    2              0.000003   if s != ""
+                                " Load the syntax file(s).  When there are several, separated by dots,
+                                " load each in sequence.
+    4              0.000015     for name in split(s, '\.')
+    2   0.004046   0.001855       exe "runtime! syntax/" . name . ".vim syntax/" . name . "/*.vim"
+    2              0.000005     endfor
+    2              0.000001   endif
+
+FUNCTION  <SNR>87_OnCursorMovedNormalMode()
+Called 12 times
+Total time:   0.002669
+ Self time:   0.001449
+
+count  total (s)   self (s)
+   12   0.000590   0.000083   if !s:AllowedToCompleteInCurrentFile()
+                                return
+                              endif
+                            
+   12   0.000776   0.000063   call s:OnFileReadyToParse()
+   12              0.001248   py ycm_state.OnCursorMoved()
+
+FUNCTION  <SNR>65_MRU_Refresh_Menu()
+Called 4 times
+Total time:   0.004387
+ Self time:   0.000602
+
+count  total (s)   self (s)
+    4              0.000028     if !has('menu') || !g:MRU_Add_Menu
+                                    " No support for menus
+                                    return
+                                endif
+                            
+                                " Setup the cpoptions properly for the maps to work
+    4              0.000026     let old_cpoptions = &cpoptions
+    4              0.000024     set cpoptions&vim
+                            
+                                " Remove the MRU menu
+                                " To retain the teared-off MRU menu, we need to add a dummy entry
+    4              0.000026     silent! unmenu &File.&Recent\ Files
+                                " The menu priority of the File menu is 10. If the MRU plugin runs
+                                " first before menu.vim, the File menu order may not be correct.
+                                " So specify the priority of the File menu here.
+    4              0.000032     10noremenu &File.&Recent\ Files.Dummy <Nop>
+    4              0.000062     silent! unmenu! &File.&Recent\ Files
+                            
+    4              0.000047     anoremenu <silent> &File.&Recent\ Files.Refresh\ list :call <SID>MRU_LoadList()<CR>
+    4   0.000101   0.000059     exe 'tmenu File.&Recent\ Files.Refresh\ list Reload the MRU file list from ' . s:MRU_escape_filename(g:MRU_File)
+    4              0.000022     anoremenu File.&Recent\ Files.-SEP1-           :
+                            
+                                " Add the filenames in the MRU list to the menu
+    4              0.000011     let entry_cnt = len(s:MRU_files)
+    4              0.000007     if entry_cnt > g:MRU_Max_Menu_Entries
+                                    " Show only MRU_Max_Menu_Entries file names in the menu
+    4              0.000041         let mru_list = s:MRU_files[0 : g:MRU_Max_Menu_Entries - 1]
+    4              0.000007         let entry_cnt = g:MRU_Max_Menu_Entries
+    4              0.000002     else
+                                    let mru_list = s:MRU_files
+                                endif
+    4              0.000007     if entry_cnt > g:MRU_Max_Submenu_Entries
+                            	" Split the MRU menu into sub-menus
+                                    for start_idx in range(0, entry_cnt, g:MRU_Max_Submenu_Entries)
+                                        let last_idx = start_idx + g:MRU_Max_Submenu_Entries - 1
+                                        if last_idx >= entry_cnt
+                                            let last_idx = entry_cnt - 1
+                                        endif
+                                        let prefix = 'Files\ (' . (start_idx + 1) . '\.\.\.' . (last_idx + 1) . ').'
+                                        call s:MRU_add_files_to_menu(prefix, mru_list[start_idx : last_idx])
+                                    endfor
+                                else
+    4   0.003781   0.000038         call s:MRU_add_files_to_menu('', mru_list)
+    4              0.000002     endif
+                            
+                                " Remove the dummy menu entry
+    4              0.000013     unmenu &File.&Recent\ Files.Dummy
+                            
+                                " Restore the previous cpoptions settings
+    4              0.000019     let &cpoptions = old_cpoptions
+
+FUNCTION  <SNR>36_BufEnterHook()
+Called 2 times
+Total time:   0.001410
+ Self time:   0.000095
+
+count  total (s)   self (s)
+    2   0.000065   0.000040     call syntastic#log#debug(g:_SYNTASTIC_DEBUG_AUTOCOMMANDS, 'autocmd: BufEnter, buffer ' . bufnr('') . ' = ' . string(bufname(str2nr(bufnr('')))) . ', &buftype = ' . string(&buftype))
+    2              0.000003     if &buftype ==# ''
+    2   0.001306   0.000016         call s:notifiers.refresh(g:SyntasticLoclist.current())
+    2              0.000002     elseif &buftype ==# 'quickfix'
+                                    " TODO: this is needed because in recent versions of Vim lclose
+                                    " can no longer be called from BufWinLeave
+                                    " TODO: at this point there is no b:syntastic_loclist
+                                    let loclist = filter(copy(getloclist(0)), 'v:val["valid"] == 1')
+                                    let owner = str2nr(getbufvar(bufnr(''), 'syntastic_owner_buffer'))
+                                    let buffers = syntastic#util#unique(map(loclist, 'v:val["bufnr"]') + (owner ? [owner] : []))
+                                    if get(w:, 'syntastic_loclist_set', 0) && !empty(loclist) && empty(filter( buffers, 'syntastic#util#bufIsActive(v:val)' ))
+                                        call SyntasticLoclistHide()
+                                    endif
+                                endif
+
+FUNCTION  <SNR>67_savetofile()
+Called 2 times
+Total time:   0.000500
+ Self time:   0.000022
+
+count  total (s)   self (s)
+    2   0.000500   0.000022 	cal ctrlp#utils#writecache(a:mrufs, s:cadir, s:cafile)
+
+FUNCTION  <SNR>87_DiagnosticUiSupportedForCurrentFiletype()
+Called 19 times
+Total time:   0.000099
+ Self time:   0.000099
+
+count  total (s)   self (s)
+   19              0.000087   return get( s:diagnostic_ui_filetypes, &filetype, 0 )
+
+FUNCTION  <SNR>65_MRU_escape_filename()
+Called 44 times
+Total time:   0.000441
+ Self time:   0.000441
+
+count  total (s)   self (s)
+   44              0.000107     if exists("*fnameescape")
+   44              0.000308         return fnameescape(a:fname)
+                                else
+                                    return escape(a:fname, s:esc_filename_chars)
+                                endif
+
+FUNCTION  <SNR>87_OnVimLeave()
+Called 1 time
+Total time:   0.000091
+ Self time:   0.000091
+
+count  total (s)   self (s)
+    1              0.000089   py ycm_state.OnVimLeave()
+
+FUNCTION  <SNR>38_SetupAutoCommands()
+Called 4 times
+Total time:   0.001174
+ Self time:   0.001126
+
+count  total (s)   self (s)
+                                " Auto commands group
+    4              0.000011     augroup better_whitespace
+    4              0.000755         autocmd!
+                            
+    4   0.000079   0.000031         if <SID>ShouldSkipHighlight()
+                                        match ExtraWhitespace ''
+                                        return
+                                    endif
+                            
+    4              0.000006         if g:better_whitespace_enabled == 1
+    4              0.000008             if s:better_whitespace_initialized == 0
+                                            call <SID>WhitespaceInit()
+                                        endif
+                            
+                                        " Check if current line is disabled softly
+    4              0.000006             if g:current_line_whitespace_disabled_soft == 0
+                                            " Highlight all whitespace upon entering buffer
+    4              0.000030                 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+                                            " Check if current line highglighting is disabled
+    4              0.000006                 if g:current_line_whitespace_disabled_hard == 1
+                                                " Never highlight whitespace on current line
+                                                autocmd InsertEnter,CursorMoved,CursorMovedI * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/'
+                                            else
+                                                " When in insert mode, do not highlight whitespace on the current line
+    4              0.000037                     autocmd InsertEnter,CursorMovedI * exe 'match ExtraWhitespace ' . '/\%<' . line(".") .  'l\s\+$\|\%>' . line(".") .  'l\s\+$/'
+    4              0.000003                 endif
+                                            " Highlight all whitespace when exiting insert mode
+    4              0.000088                 autocmd InsertLeave,BufReadPost * match ExtraWhitespace /\s\+$/
+                                            " Clear whitespace highlighting when leaving buffer
+    4              0.000014                 autocmd BufWinLeave * match ExtraWhitespace ''
+    4              0.000004             else
+                                            " Highlight extraneous whitespace at the end of lines, but not the
+                                            " current line.
+                                            call s:InAllWindows('syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/')
+                                            autocmd InsertEnter * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+\%#\@!$/ containedin=ALLBUT,gitcommitDiff
+                                            autocmd InsertLeave,BufReadPost * syn clear ExtraWhitespace | syn match ExtraWhitespace excludenl /\s\+$/ containedin=ALLBUT,gitcommitDiff
+                                        endif
+    4              0.000003         endif
+                            
+                                    " Strip whitespace on save if enabled
+    4              0.000006         if g:strip_whitespace_on_save == 1
+                                        autocmd BufWritePre * call <SID>StripWhitespace( 0, line("$") )
+                                    endif
+                            
+    4              0.000004     augroup END
+
+FUNCTION  <SNR>38_ShouldSkipHighlight()
+Called 4 times
+Total time:   0.000048
+ Self time:   0.000048
+
+count  total (s)   self (s)
+    4              0.000044     return &buftype == 'nofile' || index(g:better_whitespace_filetypes_blacklist, &ft) >= 0
+
+FUNCTION  <SNR>7_BMTruncName()
+Called 1 time
+Total time:   0.000034
+ Self time:   0.000034
+
+count  total (s)   self (s)
+    1              0.000002   let name = a:fname
+    1              0.000002   if g:bmenu_max_pathlen < 5
+                                let name = ""
+                              else
+    1              0.000004     let len = strlen(name)
+    1              0.000002     if len > g:bmenu_max_pathlen
+                                  let amountl = (g:bmenu_max_pathlen / 2) - 2
+                                  let amountr = g:bmenu_max_pathlen - amountl - 3
+                                  let pattern = '^\(.\{,' . amountl . '}\).\{-}\(.\{,' . amountr . '}\)$'
+                                  let left = substitute(name, pattern, '\1', '')
+                                  let right = substitute(name, pattern, '\2', '')
+                                  if strlen(left) + strlen(right) < len
+                            	let name = left . '...' . right
+                                  endif
+                                endif
+    1              0.000001   endif
+    1              0.000002   return name
+
+FUNCTION  <SNR>87_SetUpCompleteopt()
+Called 7 times
+Total time:   0.000165
+ Self time:   0.000165
+
+count  total (s)   self (s)
+                              " Some plugins (I'm looking at you, vim-notes) change completeopt by for
+                              " instance adding 'longest'. This breaks YCM. So we force our settings.
+                              " There's no two ways about this: if you want to use YCM then you have to
+                              " have these completeopt settings, otherwise YCM won't work at all.
+                            
+                              " We need menuone in completeopt, otherwise when there's only one candidate
+                              " for completion, the menu doesn't show up.
+    7              0.000051   set completeopt-=menu
+    7              0.000024   set completeopt+=menuone
+                            
+                              " This is unnecessary with our features. People use this option to insert
+                              " the common prefix of all the matches and then add more differentiating chars
+                              " so that they can select a more specific match. With our features, they
+                              " don't need to insert the prefix; they just type the differentiating chars.
+                              " Also, having this option set breaks the plugin.
+    7              0.000021   set completeopt-=longest
+                            
+    7              0.000012   if g:ycm_add_preview_to_completeopt
+                                set completeopt+=preview
+                              endif
+
+FUNCTION  UltiSnips#FileTypeChanged()
+Called 2 times
+Total time:   0.000239
+ Self time:   0.000239
+
+count  total (s)   self (s)
+    2              0.000118     exec g:_uspy "UltiSnips_Manager.reset_buffer_filetypes()"
+    2              0.000111     exec g:_uspy "UltiSnips_Manager.add_buffer_filetypes('" . &ft . "')"
+    2              0.000006     return ""
+
+FUNCTIONS SORTED ON TOTAL TIME
+count  total (s)   self (s)  function
+    6   0.172239   0.162788  <SNR>87_OnBufferVisit()
+   19   0.009911   0.009323  <SNR>87_OnFileReadyToParse()
+    3   0.008569   0.008450  <SNR>87_OnBufferUnload()
+    2   0.006677   0.003666  <SNR>16_LoadFTPlugin()
+    2   0.005643   0.000536  <SNR>65_MRU_AddFile()
+    4   0.004387   0.000602  <SNR>65_MRU_Refresh_Menu()
+    2   0.004136   0.001945  <SNR>19_SynSet()
+    4   0.003743   0.003344  <SNR>65_MRU_add_files_to_menu()
+   12   0.002669   0.001449  <SNR>87_OnCursorMovedNormalMode()
+    2   0.002655   0.000378  <SNR>65_MRU_LoadList()
+   12   0.002129             <SNR>71_Highlight_Matching_Pair()
+    2   0.001410   0.000095  <SNR>36_BufEnterHook()
+    5   0.001297   0.000173  <SNR>67_record()
+    2   0.001223   0.000509  77()
+    4   0.001174   0.001126  <SNR>38_SetupAutoCommands()
+    5   0.001124   0.000757  <SNR>67_addtomrufs()
+    2   0.001045   0.000854  <SNR>17_LoadIndent()
+   22   0.000851             <SNR>87_AllowedToCompleteInCurrentFile()
+    2   0.000500   0.000022  <SNR>67_savetofile()
+    2   0.000478   0.000442  ctrlp#utils#writecache()
+
+FUNCTIONS SORTED ON SELF TIME
+count  total (s)   self (s)  function
+    6   0.172239   0.162788  <SNR>87_OnBufferVisit()
+   19   0.009911   0.009323  <SNR>87_OnFileReadyToParse()
+    3   0.008569   0.008450  <SNR>87_OnBufferUnload()
+    2   0.006677   0.003666  <SNR>16_LoadFTPlugin()
+    4   0.003743   0.003344  <SNR>65_MRU_add_files_to_menu()
+   12              0.002129  <SNR>71_Highlight_Matching_Pair()
+    2   0.004136   0.001945  <SNR>19_SynSet()
+   12   0.002669   0.001449  <SNR>87_OnCursorMovedNormalMode()
+    4   0.001174   0.001126  <SNR>38_SetupAutoCommands()
+    2   0.001045   0.000854  <SNR>17_LoadIndent()
+   22              0.000851  <SNR>87_AllowedToCompleteInCurrentFile()
+    5   0.001124   0.000757  <SNR>67_addtomrufs()
+    4   0.004387   0.000602  <SNR>65_MRU_Refresh_Menu()
+    2   0.005643   0.000536  <SNR>65_MRU_AddFile()
+    2   0.001223   0.000509  77()
+    2   0.000478   0.000442  ctrlp#utils#writecache()
+   44              0.000441  <SNR>65_MRU_escape_filename()
+    2   0.002655   0.000378  <SNR>65_MRU_LoadList()
+    2              0.000342  <SNR>65_MRU_SaveList()
+   19   0.000393   0.000294  <SNR>87_UpdateDiagnosticNotifications()
+

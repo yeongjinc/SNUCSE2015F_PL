@@ -1,0 +1,10 @@
+
+let proc leaf(i) =
+	{left:=unit, value:=i, right:=unit}
+in
+2015
+
+
+(*
+write(1)
+*)	
