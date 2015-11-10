@@ -27,10 +27,57 @@ module Translator = struct
     | K.SEQ (e1, e2) -> trans e1 @ [Sm5.POP] @ trans e2
     | K.IF (e1, e2, e3) -> trans e1 @ [Sm5.JTR ((trans e2), (trans e3))]
     | K.WHILE (e1, e2) ->
-            let strWhile = "#while" in
-            []
-            (*trans e1 @ [Sm5.JTR ((trans e2 @ [Sm5.POP] @ trans(K.WHILE(e1, e2))), (Sm5.PUSH (Sm5.Val Sm5.Unit)))]*)
-    | K.FOR(id, e1, e2, e3) -> [](* TODO *)
+            let d = "#dummy" in
+            let t = "#while" in
+            let func = trans e1 @ [Sm5.JTR
+                        ((trans e2 @ [Sm5.POP] @            (* true *)
+                        [Sm5.PUSH (Sm5.Id t); Sm5.PUSH (Sm5.Id t); Sm5.PUSH (Sm5.Id d); Sm5.LOAD;
+                        Sm5.PUSH (Sm5.Id d); Sm5.CALL]),
+                        [Sm5.PUSH (Sm5.Val Sm5.Unit)])] in  (* false *)
+            [Sm5.PUSH (Sm5.Val (Sm5.Unit)); Sm5.MALLOC; Sm5.BIND d; Sm5.PUSH (Sm5.Id d); Sm5.STORE;
+            Sm5.PUSH (Sm5.Fn (d, [Sm5.BIND t] @ func)); Sm5.BIND t;
+            Sm5.PUSH (Sm5.Id t); Sm5.PUSH (Sm5.Id t); Sm5.PUSH (Sm5.Id d); Sm5.LOAD; Sm5.PUSH (Sm5.Id d); Sm5.CALL;
+            Sm5.UNBIND;
+            Sm5.POP;
+            Sm5.UNBIND;
+            Sm5.POP]
+    | K.FOR(id, e1, e2, e3) ->
+            let d = "#dummy" in
+            let t = "#for" in
+            let ti = "#tempi" in
+            let max = "#max" in
+            let func = [Sm5.PUSH (Sm5.Id max); Sm5.LOAD;
+                        Sm5.PUSH (Sm5.Id id); Sm5.LOAD;
+                        Sm5.LESS;
+                        Sm5.NOT;
+                        Sm5.JTR
+                        (
+                            (
+                                trans e3 @ [Sm5.POP; Sm5.PUSH (Sm5.Id ti); Sm5.LOAD; Sm5.PUSH (Sm5.Val (Sm5.Z 1));
+                                Sm5.ADD; Sm5.PUSH (Sm5.Id ti); Sm5.STORE; Sm5.PUSH (Sm5.Id ti); Sm5.LOAD;
+                                Sm5.PUSH (Sm5.Id id); Sm5.STORE]
+                                @
+                                [Sm5.PUSH (Sm5.Id t); Sm5.PUSH (Sm5.Id t); Sm5.PUSH (Sm5.Id d); Sm5.LOAD;
+                                Sm5.PUSH (Sm5.Id d); Sm5.CALL]
+                            ),
+                            (
+                                [Sm5.PUSH (Sm5.Val Sm5.Unit)]
+                            )
+                        )] in
+            trans e1 @ [Sm5.PUSH (Sm5.Id id); Sm5.STORE; Sm5.PUSH (Sm5.Id id); Sm5.LOAD]
+            @ [Sm5.MALLOC; Sm5.BIND ti; Sm5.PUSH(Sm5.Id ti); Sm5.STORE]
+            @ trans e2 @ [Sm5.MALLOC; Sm5.BIND max; Sm5.PUSH (Sm5.Id max); Sm5.STORE]
+            @ [Sm5.PUSH (Sm5.Val (Sm5.Unit)); Sm5.MALLOC; Sm5.BIND d; Sm5.PUSH (Sm5.Id d); Sm5.STORE;
+            Sm5.PUSH (Sm5.Fn (d, [Sm5.BIND t] @ func)); Sm5.BIND t;
+            Sm5.PUSH (Sm5.Id t); Sm5.PUSH (Sm5.Id t); Sm5.PUSH (Sm5.Id d); Sm5.LOAD; Sm5.PUSH (Sm5.Id d); Sm5.CALL;
+            Sm5.UNBIND;
+            Sm5.POP;
+            Sm5.UNBIND;
+            Sm5.POP;
+            Sm5.UNBIND;
+            Sm5.POP;
+            Sm5.UNBIND;
+            Sm5.POP]
     | K.LETV (x, e1, e2) ->
       trans e1 @ [Sm5.MALLOC; Sm5.BIND x; Sm5.PUSH (Sm5.Id x); Sm5.STORE] @
       trans e2 @ [Sm5.UNBIND; Sm5.POP]
