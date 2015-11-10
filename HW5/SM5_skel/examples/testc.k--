@@ -1,0 +1,7 @@
+(* Public test case 8 : Recursive *)
+let x := 1 in
+write x;
+write x;
+write x
+
+(* Output : prints out "89\n" *)
