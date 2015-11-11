@@ -184,18 +184,20 @@ struct
           List.map snd k
       in
 
+      let rec evaluelist_from_e e =
+          match e with
+          | (_, ev)::tl -> ev::(evaluelist_from_e tl)
+          | [] -> []
+      in
+
+      let rec l_from_evalue evl =
+          match evl with
+          | Loc(l)::tl -> l::(l_from_evalue tl)
+          | Proc(s, c, e)::tl -> (l_from_evalue (evaluelist_from_e e)) @ l_from_evalue tl
+          | [] -> []
+      in
+
       let all_l_from_elist elist : loc list =
-          let rec evaluelist_from_e e =
-              match e with
-              | (_, ev)::tl -> ev::(evaluelist_from_e tl)
-              | [] -> []
-          in
-          let rec l_from_evalue evl =
-              match evl with
-              | Loc(l)::tl -> l::(l_from_evalue tl)
-              | _::tl -> l_from_evalue tl
-              | [] -> []
-          in
           let rec evaluelist_from_elist elist=
               match elist with
               | e::tl -> (evaluelist_from_e e) @ (evaluelist_from_elist tl)
@@ -204,16 +206,19 @@ struct
           l_from_evalue (evaluelist_from_elist elist)
       in
 
-      let rec add_l m l =
-          (if not (List.mem l !reachable_locs) then
-              let _ = reachable_locs := (l::!reachable_locs) in ());
-          let v = List.assoc l m in
+
+      let rec add_v v =
           match v with
           | L(loc) -> add_l m loc
           | R(record) ->
-                  let rllist = List.map snd record in
-                  List.iter (add_l m) rllist
+                  let rlist = List.map snd record in
+                  List.iter (add_l m) rlist
           | _ -> ()
+      and add_l m l =
+          (if not (List.mem l !reachable_locs) then
+              let _ = reachable_locs := (l::!reachable_locs) in ());
+          let v = List.assoc l m in
+          add_v v
       in
 
 
@@ -221,6 +226,22 @@ struct
           let elist : environment list = [e]@(all_e_from_k k) in
           let llist : loc list = all_l_from_elist elist in
           List.iter (add_l m) llist
+      in
+
+      let rec collect_stack s m =
+          match s with
+          | V(v)::tl -> add_v(v); collect_stack tl m
+          | P(s, c, e)::tl ->
+                  let llist = l_from_evalue (evaluelist_from_e e) in
+                  (List.iter (add_l m) llist); collect_stack tl m
+          | M(str, ev)::tl ->
+                  (match ev with
+                  | Loc(l) -> add_l m l
+                  | Proc(s, c, e) ->
+                          let llist = l_from_evalue (evaluelist_from_e e) in
+                          List.iter (add_l m) llist
+                  ); collect_stack tl m
+          | [] -> ()
       in
 
     if List.length m < mem_limit then
@@ -232,6 +253,7 @@ struct
        * let _ = ...
        *)
       let _ = collect m e k in
+      let _ = collect_stack s m in
       let new_m = List.filter (fun (l, _) -> List.mem l !reachable_locs) m in
       if List.length new_m < mem_limit then
         let _ = loc_id := !loc_id + 1 in
