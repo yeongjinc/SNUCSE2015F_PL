@@ -25,7 +25,7 @@ module M : sig
            | SND of exp            (*   e.2      *)
   and const = S of string | N of int | B of bool
   and id = string
-  and decl = 
+  and decl =
     | REC of id * id * exp  (* Recursive function decl. (fun_id, arg_id, body) *)
     | VAL of id * exp       (* Value decl, including non-recursive functions *)
   and bop = ADD | SUB | EQ | AND | OR
@@ -63,7 +63,7 @@ struct
            | SND of exp            (*   e.2      *)
   and const = S of string | N of int | B of bool
   and id = string
-  and decl = 
+  and decl =
     | REC of id * id * exp  (* Recursive function decl. (fun_id, arg_id, body) *)
     | VAL of id * exp       (* Value decl, including non-recursive functions *)
   and bop = ADD | SUB | EQ | AND | OR
@@ -100,33 +100,33 @@ struct
    * load M l                M(l)
    *)
   let (@+) f (x, v) = (fun y -> if y = x then v else f y)
-  let store (l, m) p = (l, m @+ p)        
-  let load (_, m) l = m l                
+  let store (l, m) p = (l, m @+ p)
+  let load (_, m) l = m l
   let malloc (l, m) = (l, (l+1, m))
 
   (* auxiliary functions *)
-  let getInt = function 
-    | (Int n) -> n 
+  let getInt = function
+    | (Int n) -> n
     | _ -> raise (TypeError "not an int")
 
-  let getString = function 
-    | (String s) -> s 
+  let getString = function
+    | (String s) -> s
     | _ -> raise (TypeError "not a string")
 
-  let getBool = function 
-    | (Bool b) -> b 
+  let getBool = function
+    | (Bool b) -> b
     | _ -> raise (TypeError "not a bool")
 
-  let getLoc = function 
-    | (Loc l) -> l 
+  let getLoc = function
+    | (Loc l) -> l
     | _ -> raise (TypeError "not a loc")
 
-  let getPair = function 
-    | (Pair (a,b)) -> (a, b) 
+  let getPair = function
+    | (Pair (a,b)) -> (a, b)
     | _ -> raise (TypeError "not a pair")
 
-  let getClosure = function 
-    | (Closure c) -> c 
+  let getClosure = function
+    | (Closure c) -> c
     | _ -> raise (TypeError "not a function")
 
   let op2fn =
@@ -134,17 +134,22 @@ struct
     | SUB -> (fun (v1,v2) -> Int (getInt v1 - getInt v2))
     | AND -> (fun (v1,v2) -> Bool (getBool v1 && getBool v2))
     | OR ->  (fun (v1,v2) -> Bool (getBool v1 || getBool v2))
-    | EQ -> (* TODO : implement this *)
-      failwith "Unimplemented"
+    | EQ -> (fun (v1, v2) ->
+                (match (v1, v2) with
+                | (Int n1, Int n2) -> (if n1 == n2 then Bool(true) else Bool(false))
+                | (String s1, String s2) -> (if (String.compare s1 s2 == 0) then Bool(true) else Bool(false))
+                | _ -> raise (TypeError "type mismatch in EQ")
+                )
+            )
 
   let rec printValue =
-    function 
+    function
     | Int n -> print_endline (string_of_int n)
     | Bool b -> print_endline (string_of_bool b)
     | String s -> print_endline s
     | _ -> raise (TypeError "WRITE operand is not int/bool/string")
 
-  let rec eval env mem exp = 
+  let rec eval env mem exp =
     match exp with
     | CONST (S s) -> (String s, mem)
     | CONST (N n) -> (Int n, mem)
@@ -155,10 +160,11 @@ struct
       let (v2, m') = eval env mem e2 in
       let (v1, m'') = eval env m' e1 in
       let (c, env') = getClosure v1 in
-      (match c with 
+      (match c with
       | Fun (x, e) -> eval (env' @+ (x, v2)) m'' e
-      | RecFun (f, x, e) ->  (* TODO : implement this *)
-        failwith "Unimplemented")
+      | RecFun (f, x, e) ->
+              eval ((env' @+ (f, v1)) @+ (x, v2)) m'' e
+      )
     | IF (e1, e2, e3) ->
       let (v1, m') = eval env mem e1 in
       eval env m' (if getBool v1 then e2 else e3)
@@ -173,22 +179,51 @@ struct
       let (v, m') = eval env mem e in
       let _ = printValue v in
       (v, m')
-    | PAIR (e1, e2) -> 
+    | PAIR (e1, e2) ->
       let (v1, m') = eval env mem e1 in
       let (v2, m'') = eval env m' e2 in
       (Pair (v1, v2), m'')
-    | FST e -> 
+    | FST e ->
       let (v, m') = eval env mem e in
       (fst (getPair v), m')
-    | SND e -> 
+    | SND e ->
       let (v, m') = eval env mem e in
       (snd (getPair v), m')
-    (* TODO : complete the rest of interpreter *)
-    | _ -> failwith "Unimplemented"
+    | LET (d, e) ->
+            (match d with
+            | REC(fun_id, arg_id, body) ->
+                    let c = Closure (RecFun (fun_id, arg_id, body), env) in
+                    let env' = env @+ (fun_id, c) in
+                    eval env' mem e
+            | VAL(x, e') ->
+                    let (v1, m') = eval env mem e' in
+                    let env' = env @+ (x, v1) in
+                    eval env' m' e
+            )
+    | MALLOC (e) ->
+            let (v, m') = eval env mem e in
+            let (l, m'') = malloc m' in
+            let stored = store m'' (l, v) in
+            (Loc l, stored)
+    | ASSIGN (e1, e2) ->
+            let (v1, m') = eval env mem e1 in
+            let l = getLoc v1 in
+            let (v2, m'') = eval env m' e2 in
+            let stored = store m'' (l, v2) in
+            (v2, stored)
+    | BANG (e) ->
+            let (v1, m') = eval env mem e in
+            let l = getLoc v1 in
+            let v2 = load m' l in
+            (v2, m')
+    | SEQ (e1, e2) ->
+            let (v1, m') = eval env mem e1 in
+            let (v2, m'') = eval env m' e2 in
+            (v2, m'')
 
   let emptyEnv = (fun x -> raise (RunError ("unbound id: " ^ x)))
 
-  let emptyMem = 
+  let emptyMem =
     (0, fun l -> raise (RunError ("uninitialized loc: " ^ string_of_int l)))
 
   let run exp = ignore (eval emptyEnv emptyMem exp)
