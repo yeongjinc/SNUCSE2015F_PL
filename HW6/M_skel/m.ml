@@ -157,8 +157,8 @@ struct
     | VAR x -> (env x, mem)
     | FN (x, e) -> (Closure (Fun (x, e), env), mem)
     | APP (e1, e2) ->
-      let (v2, m') = eval env mem e2 in
-      let (v1, m'') = eval env m' e1 in
+      let (v1, m') = eval env mem e1 in
+      let (v2, m'') = eval env m' e2 in
       let (c, env') = getClosure v1 in
       (match c with
       | Fun (x, e) -> eval (env' @+ (x, v2)) m'' e
