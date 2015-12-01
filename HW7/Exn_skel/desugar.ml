@@ -6,7 +6,6 @@
 
 open Xexp
 
-(* TODO : alpha_conv 필요한지 고민해 볼 것 *)
 let count = ref 0
 let new_name () =
     let _ = count := !count + 1 in
@@ -33,11 +32,26 @@ let addHandler k n h =
             Fn (v,
                 If (Equal (Var v, Num n),
                     App (h, Var k),
-                    App (App (Var k, Num 1), Num 1)
+                    App (App (Var k, Num 1), Var v)
                 )
             )
         )
     )
+
+let rec alpha_conv xe subs =
+  match xe with
+  | Num n -> Num n
+  | Var x -> (try Var (List.assoc x subs) with Not_found -> Var x)
+  | Fn (x, e) ->
+    let x' = new_name () in
+    let subs' = (x, x') :: subs in
+    Fn (x', alpha_conv e subs')
+  | App (e1, e2) -> App (alpha_conv e1 subs, alpha_conv e2 subs)
+  | If (e1, e2, e3) ->
+    If (alpha_conv e1 subs, alpha_conv e2 subs, alpha_conv e3 subs)
+  | Raise e -> Raise (alpha_conv e subs)
+  | Handle (e1, n, e2) -> Handle ((alpha_conv e1 subs), n, (alpha_conv e2 subs))
+  | Equal (e1, e2) -> Equal ((alpha_conv e1 subs), (alpha_conv e2 subs))
 
 
 (* cps = (Int->Int->Result) -> Result *)
@@ -46,7 +60,13 @@ let rec cps' xe =
     match xe with
     | Num n -> Fn (k, App (App (Var k, Num 0), Num n))
     | Var x -> Fn (k, App (App (Var k, Num 0), Var x))
-    | Fn (x, e) -> Fn (k, App (App (Var k, Num 0), Fn(x, e)))
+    | Fn (x, e) ->
+            Fn (k,
+                App (
+                    App (Var k, Num 0),
+                    Fn (x, (cps' e))
+                )
+            )
     | Raise e ->
             let ie = new_name() in (* isException *)
             let v = new_name() in
@@ -73,10 +93,13 @@ let rec cps' xe =
                 App (cps' e1, k')
             )
     | App (e1, e2) ->
-            let ie1 = new_name () in
-            let ie2 = new_name () in
+            let ie1 = new_name() in
+            let ie2 = new_name() in
             let v1 = new_name() in
             let v2 = new_name() in
+
+            let iet = new_name() in
+            let vt = new_name() in
             Fn (k,
                 App (cps' e1,
                     Fn (ie1,
@@ -86,7 +109,17 @@ let rec cps' xe =
                                     Fn (ie2,
                                         If (Equal (Var ie2, Num 0),
                                             Fn (v2,
-                                                App (App (Var k, Num 0), App (Var v1, Var v2))
+                                                App (App (Var k, Num 0),
+                                                    App (App (Var v1, Var v2),
+                                                        Fn (iet,
+                                                            (If (Equal (Var iet, Num 0),
+                                                                Fn (vt, Var vt),
+                                                                App (Var k, Num 1)
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
                                             ),
                                             Fn (v2,
                                                 App (App (Var k, Num 1), Var v2)
@@ -181,4 +214,4 @@ let rec cps' xe =
 
 (* TODO : Implement this function *)
 let removeExn : xexp -> xexp = fun e ->
-    App ((cps' e), initialK)
+    App ((cps' (alpha_conv e [])), initialK)
