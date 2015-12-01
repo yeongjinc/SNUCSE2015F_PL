@@ -11,4 +11,4 @@ ocamlc -c lexer.ml
 ocamlc -c desugar.ml
 
 ocamlc -c main.ml
-ocamlc -o run xexp.cmo lexer.cmo parser.cmo desugar.cmo main.cmo
+ocamlc -o run.exe xexp.cmo lexer.cmo parser.cmo desugar.cmo main.cmo
