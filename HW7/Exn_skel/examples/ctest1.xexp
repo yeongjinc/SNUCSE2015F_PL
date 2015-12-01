@@ -1,0 +1,4 @@
+(* Custom Testcase *)
+
+(raise 77) handle 77 200
+
