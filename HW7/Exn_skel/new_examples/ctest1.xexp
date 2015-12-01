@@ -1,0 +1,5 @@
+(* Custom : If exception rises, following type error must not occur *)
+
+let fail = fn n => raise n in
+(if (fail 10) = 20 then (1 = 2) = 3 else 2) handle 10 20
+

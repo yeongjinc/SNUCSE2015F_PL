@@ -109,17 +109,17 @@ let rec cps' xe =
                                     Fn (ie2,
                                         If (Equal (Var ie2, Num 0),
                                             Fn (v2,
-                                                App (App (Var k, Num 0),
+                                                (*App (App (Var k, Num 0),*)
                                                     App (App (Var v1, Var v2),
                                                         Fn (iet,
                                                             (If (Equal (Var iet, Num 0),
-                                                                Fn (vt, Var vt),
+                                                                Fn (vt, App (App (Var k, Num 0), Var vt)),
                                                                 App (Var k, Num 1)
                                                                 )
                                                             )
                                                         )
                                                     )
-                                                )
+                                                (* ) *)
                                             ),
                                             Fn (v2,
                                                 App (App (Var k, Num 1), Var v2)
