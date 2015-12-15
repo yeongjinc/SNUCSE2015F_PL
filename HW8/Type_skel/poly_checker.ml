@@ -248,12 +248,19 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
                 (match d with
                 | M.REC (i1, i2, e2) ->
                         let v1 = new_var() in
-                        let env1 = env @ [(i1, (SimpleTyp (TVar v1)))] in
-                        let (s1, c1) = m env1 e2 (TVar v1) in
+                        let v2 = new_var() in
+                        let rec_to_fun = TFun (TVar v1, TVar v2) in
                         let f_t = if (expansive e2 = true)
-                                  then (SimpleTyp (s1 (TVar v1)))
-                                  else generalize env1 (s1 (TVar v1)) in
-                        let env2 = (subst_env s1 env) @ [(i2, f_t)] in
+                                  then (SimpleTyp rec_to_fun)
+                                  else generalize env rec_to_fun in
+                        let env1 = env @ [(i1, f_t)] in
+                        let (s1, c1) = m env1 (M.FN (i2, e2)) rec_to_fun in
+
+                        let f_t2 = if (expansive e2 = true)
+                                   then (SimpleTyp (s1 rec_to_fun))
+                                   else generalize env1 (s1 rec_to_fun) in
+                        (* env1이 아님! *)
+                        let env2 = (subst_env s1 env) @ [(i1, f_t2)] in
                         let (s2, c2) = m env2 e1 (s1 t) in
                         ((s2 @@ s1), append_cond c1 c2)
                 | M.VAL (i1, e2) ->
