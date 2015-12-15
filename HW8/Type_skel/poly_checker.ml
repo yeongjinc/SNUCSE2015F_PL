@@ -242,6 +242,8 @@ let rec unify : typ -> typ -> subst =
                          then
                             raise (M.TypeError "unify : t1 in t2")
                          else
+                             (* 사실 마지막에 하기 때문에 여기서 굳이 안해도 될 것 같음
+                                다만 write / eq 완전히 잡는 게 너무 골치아팠어서 일단 안전하게 놔둠 *)
                              (
                                  if List.mem t1 !e_list
                                  then
@@ -384,11 +386,20 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
 
                         (* let _ = if expansive e2 = true then print_endline "true" else print_endline "false" in
                            REC 의 e2는 함수본문 그 자체이므로 expansive에 넘겨줄 필요가 없다 *)
-                        let f_t = generalize env rec_to_fun in
+                        (* let f_t = generalize env rec_to_fun in *)
+                        let f_t = if (expansive e2 = true)
+                                  then (SimpleTyp rec_to_fun)
+                                  else generalize env rec_to_fun in
+
                         let env1 = [(i1, f_t)] @ env in
                         let (s1, c1) = m env1 (M.FN (i2, e2)) rec_to_fun in
 
-                        let f_t2 = generalize (subst_env s1 env) (s1 rec_to_fun) in
+                        (* let f_t2 = generalize (subst_env s1 env) (s1 rec_to_fun) in *)
+                        let f_t2 = if false && (expansive e2 = true)
+                                   then (SimpleTyp (s1 rec_to_fun))
+                                   else generalize (subst_env s1 env) (s1 rec_to_fun) in
+
+
                         (* env1이 아님! *)
                         let env2 = [(i1, f_t2)] @ (subst_env s1 env) in
                         let (s2, c2) = m env2 e1 (s1 t) in
