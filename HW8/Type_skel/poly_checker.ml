@@ -108,6 +108,37 @@ let get_type_scheme : typ_env -> M.id -> typ_scheme =
         else
             raise (M.TypeError "ID doesn't exist in Env")
 
+(* Debug *)
+(*
+let prt : typ -> unit =
+  let rec iter : typ -> unit =
+    fun t ->
+      match t with
+      | TInt -> print_string "Int"
+      | TBool -> print_string "Bool"
+      | TString -> print_string "String"
+      | TPair (t1, t2) ->
+          let _ = print_string "(" in
+          let _ = iter t1 in
+          let _ = print_string ", " in
+          let _ = iter t2 in
+          print_string ")"
+      | TFun (t1, t2) ->
+          let _ = print_string "(" in
+          let _ = iter t1 in
+          let _ = print_string " → " in
+          let _ = iter t2 in
+          print_string ")"
+      | TLoc t ->
+          let _ = iter t in
+          print_string "_Loc"
+      | TVar v -> print_string ("Var " ^ v)
+	in
+  fun t ->
+      let _ = iter t in
+      print_string "\n"
+*)
+
 (* Condition *)
 type cond = var -> typ -> bool
 
@@ -174,9 +205,11 @@ let rec unify : typ -> typ -> subst =
                 let s2 = unify (s1 t1b) (s1 t2b) in
                 (s2 @@ s1)
         | _ ->
+                (* let _ = prt t1 in
+                let _ = prt t2 in *)
                 raise (M.TypeError "unify : unhandled")
 
-(* Expansive (about Memory) *)
+(* Expansive *)
 let rec expansive : M.exp -> bool =
     fun e ->
         match e with
@@ -199,20 +232,18 @@ let rec expansive : M.exp -> bool =
         | _ -> false
 
 let rec instantiate ts =
-  match ts with
-  | SimpleTyp t1 -> t1
-  | GenTyp (ids, t1) ->
-    let s = instantiate_iter ids empty_subst in
-    (* write_vars := check_and_add (!write_vars) s;
-    eq_vars := check_and_add (!eq_vars) s; *)
-    s t1
-
-and instantiate_iter lst typ =
-  match lst with
-  | [] -> typ
-  | hd::tl ->
-    let new_type = make_subst hd (TVar (new_var())) in
-    (instantiate_iter tl new_type) @@ typ
+    match ts with
+    | SimpleTyp t1 -> t1
+    | GenTyp (vl, t1) ->
+            let s = instantiate' vl empty_subst in
+            s t1
+and instantiate' vl t =
+    match vl with
+    | [] -> t
+    | hd::tl ->
+            let v = new_var() in
+            let new_type = make_subst hd (TVar v) in
+            (instantiate' tl new_type) @@ t
 
 (* M with cond (check equal, write type) *)
 let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
@@ -223,11 +254,6 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
         | M.CONST (M.B _) -> ((unify t TBool), empty_cond)
         | M.VAR i ->
                 (* env 없는 경우 get_type_scheme에서 예외 발생 *)
-                (* let ts = subst_scheme empty_subst (get_type_scheme env i) in
-                (match ts with
-                | SimpleTyp t1 -> ((unify t t1), empty_cond)
-                | GenTyp (vl, t1) -> ((unify t t1), empty_cond)
-                ) *)
 				let ts = get_type_scheme env i in
 				let its = instantiate ts in
                 ((unify t its), empty_cond)
@@ -235,7 +261,7 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
                 let v1 = new_var() in
                 let v2 = new_var() in
                 let s1 = unify t (TFun (TVar v1, TVar v2)) in
-                let env1 = (subst_env s1 env) @ [(i, SimpleTyp (s1 (TVar v1)))] in
+                let env1 = [(i, SimpleTyp (s1 (TVar v1)))] @ (subst_env s1 env)  in
                 let (s2, c) = m env1 e1 (s1 (TVar v2)) in
                 ((s2 @@ s1), c)
         | M.APP (e1, e2) ->
@@ -250,17 +276,16 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
                         let v1 = new_var() in
                         let v2 = new_var() in
                         let rec_to_fun = TFun (TVar v1, TVar v2) in
-                        let f_t = if (expansive e2 = true)
-                                  then (SimpleTyp rec_to_fun)
-                                  else generalize env rec_to_fun in
-                        let env1 = env @ [(i1, f_t)] in
+
+                        (* let _ = if expansive e2 = true then print_endline "true" else print_endline "false" in
+                           REC 의 e2는 함수본문 그 자체이므로 expansive에 넘겨줄 필요가 없다 *)
+                        let f_t = generalize env rec_to_fun in
+                        let env1 = [(i1, f_t)] @ env in
                         let (s1, c1) = m env1 (M.FN (i2, e2)) rec_to_fun in
 
-                        let f_t2 = if (expansive e2 = true)
-                                   then (SimpleTyp (s1 rec_to_fun))
-                                   else generalize env1 (s1 rec_to_fun) in
+                        let f_t2 = generalize (subst_env s1 env) (s1 rec_to_fun) in
                         (* env1이 아님! *)
-                        let env2 = (subst_env s1 env) @ [(i1, f_t2)] in
+                        let env2 = [(i1, f_t2)] @ (subst_env s1 env) in
                         let (s2, c2) = m env2 e1 (s1 t) in
                         ((s2 @@ s1), append_cond c1 c2)
                 | M.VAL (i1, e2) ->
@@ -297,14 +322,14 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
                             | M.OR -> TBool
                             | M.EQ -> TBool in
                 let s1 = unify t res_t in
-                let (s2, c1) = m env e1 op_t in
-                let s21 = s2 @@ s1 in
-                let env1 = subst_env s21 env in
-                let (s3, c2) = m env1 e2 (s21 op_t) in
-                let s321 = s3 @@ s21 in
-                let v2 = new_var() in
+                let env1 = subst_env s1 env in
+                let (s2, c1) = m env1 e1 (s1 op_t) in
+                let env2 = subst_env s2 env1 in
+                let (s3, c2) = m env2 e2 (s2 (s1 op_t)) in
+                let s321 = s3 @@ s2 @@ s1 in
                 (match b with
                 | M.EQ ->
+                        let v2 = new_var() in
                         let c3 = add_cond empty_cond v1 [TInt; TString; TBool; TLoc (TVar v2)] in
                         (s321, (append_cond (append_cond c1 c2) c3))
                 | _ -> (s321, append_cond c1 c2)
@@ -333,8 +358,8 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
                 let v1 = new_var() in
                 let (s1, c1) = m env e1 (TVar v1) in
                 let env1 = subst_env s1 env in
-                let (s2, c2) = m env1 e2 t in
-                (s2 @@ s1, append_cond c1 c2)
+                let (s2, c2) = m env1 e2 (s1 t) in
+                (s2 @@ s1, append_cond c2 c1)
         | M.PAIR (e1, e2) ->
                 let v1 = new_var() in
                 let v2 = new_var() in
@@ -351,34 +376,6 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
         | M.SND e1 ->
                 let v1 = new_var() in
                 m env e1 (TPair ((TVar v1), t))
-
-let prt : typ -> unit =
-  let rec iter : typ -> unit =
-    fun t ->
-      match t with
-      | TInt -> print_string "Int"
-      | TBool -> print_string "Bool"
-      | TString -> print_string "String"
-      | TPair (t1, t2) ->
-          let _ = print_string "(" in
-          let _ = iter t1 in
-          let _ = print_string ", " in
-          let _ = iter t2 in
-          print_string ")"
-      | TFun (t1, t2) ->
-          let _ = print_string "(" in
-          let _ = iter t1 in
-          let _ = print_string " → " in
-          let _ = iter t2 in
-          print_string ")"
-      | TLoc t ->
-          let _ = iter t in
-          print_string "_Loc"
-      | TVar v -> print_string ("Var " ^ v)
-	in
-  fun t ->
-      let _ = iter t in
-      print_string "\n"
 
 let rec convert_to_mtyp : typ -> M.typ =
     fun t ->
