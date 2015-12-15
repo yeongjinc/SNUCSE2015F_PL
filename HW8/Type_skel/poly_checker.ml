@@ -30,13 +30,6 @@ let new_var () =
   let _ = count := !count +1 in
   "x_" ^ (string_of_int !count)
 
-(* Get Type from Env *)
-let get_type : typ_env -> M.id -> typ =
-    fun env i ->
-        if (List.exists (fun a -> (fst a) = i) env)
-        then (snd (List.find (fun a -> (fst a) = i) env))
-        else raise (M.TypeError "ID doesn't exist in Env")
-
 (* Definitions related to free type variable *)
 
 let union_ftv ftv_1 ftv_2 =
@@ -106,6 +99,16 @@ let subst_scheme : subst -> typ_scheme -> typ_scheme = fun subs tyscm ->
 let subst_env : subst -> typ_env -> typ_env = fun subs tyenv ->
   List.map (fun (x, tyscm) -> (x, subst_scheme subs tyscm)) tyenv
 
+
+(* Get Type from Env *)
+let get_type_scheme : typ_env -> M.id -> typ_scheme =
+    fun env i ->
+        if (List.exists (fun a -> (fst a) = i) env)
+        then (snd (List.find (fun a -> (fst a) = i) env))
+        else
+            let _ = print_endline "6" in
+            raise (M.TypeError "ID doesn't exist in Env")
+
 (* Condition *)
 type cond = var -> typ -> bool
 
@@ -125,6 +128,16 @@ let add_cond : cond -> var -> typ list -> cond = fun old v tl ->
                             tl)
         else old v' t')
 
+let append_cond : cond -> cond -> cond = fun c1 c2 ->
+    (fun v t ->
+        (c1 v t) && (c2 v t))
+
+let rec check_cond : int -> cond -> subst -> bool =
+    fun i c s ->
+        let v = "x_" ^ (string_of_int i) in
+        if i > !count
+        then true
+        else (c v (s (TVar v))) && (check_cond (i+1) c s)
 
 (* Unification *)
 let rec exists : typ -> var -> bool =
@@ -143,10 +156,14 @@ let rec unify : typ -> typ -> subst =
         | (TBool, TBool) -> empty_subst
         | (TString, TString) -> empty_subst
         | (TVar a, t) -> if exists t a
-                         then raise (M.TypeError "unify : t1 in t2")
+                         then
+                            let _ = print_endline "4" in
+                            raise (M.TypeError "unify : t1 in t2")
                          else make_subst a t
         | (t, TVar a) -> if exists t a
-                         then raise (M.TypeError "unify : t2 in t1")
+                         then
+                            let _ = print_endline "5" in
+                            raise (M.TypeError "unify : t2 in t1")
                          else make_subst a t
         | (TPair (t1a, t1b), TPair (t2a, t2b)) ->
                 let sa = unify t1a t2a in
@@ -157,7 +174,9 @@ let rec unify : typ -> typ -> subst =
                 let sa = unify t1a t2a in
                 let sb = unify t1b t2b in
                 (sa @@ sb)
-        | _ -> raise (M.TypeError "unify : unhandled")
+        | _ ->
+                let _ = print_endline "6" in
+                raise (M.TypeError "unify : unhandled")
 
 (* Expansive (about Memory) *)
 let rec expansive : M.exp -> bool =
@@ -185,18 +204,152 @@ let rec expansive : M.exp -> bool =
 let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
     fun env e t ->
         match e with
-        | M.CONST (S _) -> ((unify t TString), empty_cond)
-        | M.CONST (N _) -> ((unify t TInt), empty_cond)
-        | M.CONST (B _) -> ((unify t TBool), empty_cond)
+        | M.CONST (M.S _) -> ((unify t TString), empty_cond)
+        | M.CONST (M.N _) -> ((unify t TInt), empty_cond)
+        | M.CONST (M.B _) -> ((unify t TBool), empty_cond)
         | M.VAR i ->
-                (* env 없는 경우 get_type에서 예외 발생 *)
-                ((unify t (get_type env i)), empty_cond)
-        | M.FN (i, e') ->
+                (* env 없는 경우 get_type_scheme에서 예외 발생 *)
+                let ts = get_type_scheme env i in
+                (match ts with
+                | SimpleTyp t1 -> ((unify t t1), empty_cond)
+                | GenTyp (vl, t1) -> ((unify t t1), empty_cond) (* 점검 *)
+                )
+        | M.FN (i, e1) ->
                 let v1 = new_var() in
                 let v2 = new_var() in
                 let s1 = unify t (TFun (TVar v1, TVar v2)) in
-                let (s2, c) = m
+                let env1 = (subst_env s1 (env @ [(i, SimpleTyp (TVar v1))])) in
+                let (s2, c) = m env1 e1 (s1 (TVar v2)) in
+                ((s1 @@ s2), c)
+        | M.APP (e1, e2) ->
+                let v1 = new_var() in
+                let (s1, c1) = m env e1 (TFun (TVar v1, t)) in
+                let env1 = subst_env s1 env in
+                let (s2, c2) = m env1 e2 (s1 (TVar v1)) in
+                ((s1 @@ s2), append_cond c1 c2)
+        | M.LET (d, e1) ->
+                (match d with
+                | M.REC (i1, i2, e2) ->
+                        let v1 = new_var() in
+                        let env1 = env @ [(i1, (SimpleTyp (TVar v1)))] in
+                        let (s1, c1) = m env1 e2 (TVar v1) in
+                        let f_t = if (expansive e2 = true)
+                                  then (SimpleTyp (s1 (TVar v1)))
+                                  else (GenTyp ((ftv_of_typ (s1 (TVar v1))), (s1 (TVar v1)))) in
+                        let env2 = (subst_env s1 env) @ [(i2, f_t)] in
+                        let (s2, c2) = m env2 e1 (s1 t) in
+                        ((s1 @@ s2), append_cond c1 c2)
+                | M.VAL (i1, e2) ->
+                        let v1 = new_var() in
+                        let (s1, c1) = m env e2 (TVar v1) in
+                        let f_t = if (expansive e2 = true)
+                                  then (SimpleTyp (s1 (TVar v1)))
+                                  else (GenTyp ((ftv_of_typ (s1 (TVar v1))), (s1 (TVar v1)))) in
+                        let env1 = (subst_env s1 env) @ [(i1, f_t)] in
+                        let (s2, c2) = m env1 e1 (s1 t) in
+                        ((s1 @@ s2), append_cond c1 c2)
+                )
+        | M.IF (e1, e2, e3) ->
+                let (s1, c1) = m env e1 TBool in
+                let env1 = subst_env s1 env in
+                let (s2, c2) = m env1 e2 t in
+                let env2 = subst_env s2 env1 in
+                let (s3, c3) = m env2 e3 t in
+                ((s1 @@ s2 @@ s3), append_cond (append_cond c1 c2) c3)
+        | M.BOP (b, e1, e2) ->
+                let v1 = new_var() in
+                let op_t = match b with
+                           | M.ADD -> TInt
+                           | M.SUB -> TInt
+                           | M.AND -> TBool
+                           | M.OR -> TBool
+                           | M.EQ -> TVar v1 in
+                let res_t = match b with
+                            | M.ADD -> TInt
+                            | M.SUB -> TInt
+                            | M.AND -> TBool
+                            | M.OR -> TBool
+                            | M.EQ -> TBool in
+                let s1 = unify t res_t in
+                let (s2, c1) = m env e1 op_t in
+                let s12 = s1 @@ s2 in
+                let env1 = subst_env s12 env in
+                let (s3, c2) = m env1 e2 (s12 op_t) in
+                let s123 = s12 @@ s3 in
+                let v2 = new_var() in
+                (match b with
+                | M.EQ ->
+                        let c3 = add_cond empty_cond v1 [TInt; TString; TBool; TLoc (TVar v2)] in
+                        (s123, (append_cond (append_cond c1 c2) c3))
+                | _ -> (s123, append_cond c1 c2)
+                )
+        | M.READ -> (unify t TInt, empty_cond)
+        | M.WRITE e1 ->
+                let v1 = new_var() in
+                let s1 = unify t (TVar v1) in
+                let env1 = subst_env s1 env in
+                let (s2, c1) = m env1 e1 (s1 t) in
+                let c2 = add_cond empty_cond v1 [TInt; TString; TBool] in
+                (s1 @@ s2, append_cond c1 c2)
+        | M.MALLOC e1 ->
+                let v1 = new_var() in
+                let s1 = unify t (TLoc (TVar v1)) in
+                let env1 = subst_env s1 env in
+                let (s2, c1) = m env1 e1 (s1 (TVar v1)) in
+                (s1 @@ s2, c1)
+        | M.ASSIGN (e1, e2) ->
+                let (s1, c1) = m env e2 t in
+                let env1 = subst_env s1 env in
+                let (s2, c2) = m env1 e1 (s1 (TLoc t)) in
+                (s1 @@ s2, append_cond c1 c2)
+        | M.BANG e1 -> m env e1 (TLoc t)
+        | M.SEQ (e1, e2) ->
+                let v1 = new_var() in
+                let (s1, c1) = m env e1 (TVar v1) in
+                let env1 = subst_env s1 env in
+                let (s2, c2) = m env1 e2 t in
+                (s1 @@ s2, append_cond c1 c2)
+        | M.PAIR (e1, e2) ->
+                let v1 = new_var() in
+                let v2 = new_var() in
+                let s1 = unify t (TPair (TVar v1, TVar v2)) in
+                let env1 = subst_env s1 env in
+                let (s2, c1) = m env1 e1 (s1 (TVar v1)) in
+                let s12 = s1 @@ s2 in
+                let env2 = subst_env s2 env1 in
+                let (s3, c2) = m env2 e2 (s12 (TVar v2)) in
+                (s12 @@ s3, append_cond c1 c2)
+        | M.FST e1 ->
+                let v1 = new_var() in
+                m env e (TPair (t, (TVar v1)))
+        | M.SND e2 ->
+                let v1 = new_var() in
+                m env e (TPair ((TVar v1), t))
+
+
+let rec convert_to_mtyp : typ -> M.typ =
+    fun t ->
+        match t with
+        | TInt -> M.TyInt
+        | TBool -> M.TyBool
+        | TString -> M.TyString
+        | TPair (t1, t2) -> M.TyPair (convert_to_mtyp t1, convert_to_mtyp t2)
+        | TLoc t1 -> M.TyLoc (convert_to_mtyp t1)
+        | TFun (t1, t2) ->
+                let _ = print_endline "1" in
+                raise (M.TypeError "program is function only")
+        | TVar v1 ->
+                let _ = print_endline "2" in
+                raise (M.TypeError "type var remains")
 
 (* TODO : Implement this function *)
 let check : M.exp -> M.typ =
-  raise (M.TypeError "Type Checker Unimplemented")
+    fun e ->
+        let v = new_var() in
+        let (s, c) = m [] e (TVar v) in
+        if check_cond 0 c s
+        then convert_to_mtyp (s (TVar v))
+        else
+            let _ = print_endline "3" in
+            raise (M.TypeError "check_cond fail")
+
