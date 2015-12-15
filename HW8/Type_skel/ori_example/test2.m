@@ -5,3 +5,4 @@ let val f = fn x => x + 1 in
 end
 
 (* Result : type error *)
+

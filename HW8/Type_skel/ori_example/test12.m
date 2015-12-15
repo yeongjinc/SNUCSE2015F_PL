@@ -1,7 +1,7 @@
-(* Polymorphic toy 2 (type error) *)
+(* Self applicative function *)
 
 let val f = fn x => x + 1 in
-  (f 1, f true)
+  ((f f) 1, f 2)
 end
 
 (* Result : type error *)

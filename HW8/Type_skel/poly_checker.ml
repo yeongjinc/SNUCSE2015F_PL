@@ -144,10 +144,24 @@ type cond = var -> typ -> bool
 
 let empty_cond : cond = fun v t -> true
 
+let print_type t =
+    match t with
+    | TInt -> print_endline "i"
+    | TBool -> print_endline "b"
+    | TString -> print_endline "s"
+    | TLoc _ -> print_endline "l"
+    | TVar _ -> print_endline "v"
+    | TFun (_, _) -> print_endline "f"
+    | TPair (_, _) -> print_endline "p"
+
 let add_cond : cond -> var -> typ list -> cond = fun old v tl ->
     (fun v' t' ->
         if v = v'
-        then (List.exists (fun x ->
+        then
+            (* let _ = print_type t' in
+            let _ = print_endline "==" in
+            let _ = List.iter print_type tl in *)
+            (List.exists (fun x ->
                             match (x, t') with
                             | (TInt, TInt) -> true
                             | (TBool, TBool) -> true
