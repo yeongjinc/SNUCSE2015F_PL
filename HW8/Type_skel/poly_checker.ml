@@ -69,6 +69,41 @@ let generalize : typ_env -> typ -> typ_scheme = fun tyenv t ->
 
 type subst = typ -> typ
 
+(* cond로는 함수 안의 write가 체크 안되던데 도저히 디버깅을 못하겠어서 일단 *)
+let e_list = ref []
+let w_list = ref []
+let rec check_list : subst -> typ list -> typ list =
+    fun s l ->
+        match l with
+        | [] -> []
+        | hd::tl ->
+                if List.mem (s hd) l
+                then [hd] @ (check_list s tl)
+                else [(s hd); hd] @ (check_list s tl)
+
+let rec check_wlist : subst -> typ list -> bool =
+    fun s l ->
+        match l with
+        | [] -> true
+        | hd::tl ->
+                (match (s hd) with
+                | TPair (_, _)
+                | TFun (_, _)
+                | TLoc _ -> raise (M.TypeError "check_wlist")
+                | _ -> check_wlist s tl
+                )
+let rec check_elist : subst -> typ list -> bool =
+    fun s l ->
+        match l with
+        | [] -> true
+        | hd::tl ->
+                (match (s hd) with
+                | TPair (_, _)
+                | TFun (_, _) ->  raise (M.TypeError "check_wlist")
+                | _ -> check_elist s tl
+                )
+
+
 let empty_subst : subst = fun t -> t
 
 let make_subst : var -> typ -> subst = fun x t ->
@@ -94,6 +129,8 @@ let subst_scheme : subst -> typ_scheme -> typ_scheme = fun subs tyscm ->
         (fun acc_subst alpha beta -> make_subst alpha (TVar beta) @@ acc_subst)
         empty_subst alphas betas
     in
+    e_list := check_list (subs @@ s') !e_list;
+    w_list := check_list (subs @@ s') !w_list;
     GenTyp (betas, subs (s' t))
 
 let subst_env : subst -> typ_env -> typ_env = fun subs tyenv ->
@@ -183,6 +220,7 @@ let rec check_cond : int -> cond -> subst -> bool =
         then true
         else (c v (s (TVar v))) && (check_cond (i+1) c s)
 
+
 (* Unification *)
 let rec exists : typ -> var -> bool =
     fun t v ->
@@ -203,12 +241,63 @@ let rec unify : typ -> typ -> subst =
                          else if exists t a
                          then
                             raise (M.TypeError "unify : t1 in t2")
-                         else make_subst a t
+                         else
+                             (
+                                 if List.mem t1 !e_list
+                                 then
+                                     (match t2 with
+                                     | TInt
+                                     | TString
+                                     | TBool
+                                     | TLoc _
+                                     | TVar _
+                                            -> make_subst a t
+                                     | _ -> raise (M.TypeError "unify : EQ")
+                                     )
+                                 else if List.mem t1 !w_list
+                                 then
+                                     (match t2 with
+                                     | TInt
+                                     | TString
+                                     | TBool
+                                     | TVar _
+                                            -> make_subst a t
+                                     | _ -> raise (M.TypeError "unify : WRITE")
+                                     )
+                                 else
+                                     make_subst a t
+                             )
         | (t, TVar a) -> if t1 = t2 then empty_subst
                          else if exists t a
                          then
                             raise (M.TypeError "unify : t2 in t1")
-                         else make_subst a t
+                         else
+                             (
+                                 if List.mem t2 !e_list
+                                 then
+                                     (match t1 with
+                                     | TInt
+                                     | TString
+                                     | TBool
+                                     | TLoc _
+                                     | TVar _
+                                            -> make_subst a t
+                                     | _ -> raise (M.TypeError "unify : EQ")
+                                     )
+                                 else if List.mem t2 !w_list
+                                 then
+                                     (match t1 with
+                                     | TInt
+                                     | TString
+                                     | TBool
+                                     | TVar _
+                                            -> make_subst a t
+                                     | _ -> raise (M.TypeError "unify : WRITE")
+                                     )
+                                 else
+                                     make_subst a t
+                             )
+
         | (TPair (t1a, t1b), TPair (t2a, t2b)) ->
                 let s1 = unify t1a t2a in
                 let s2 = unify (s1 t1b) (s1 t2b) in
@@ -250,6 +339,8 @@ let rec instantiate ts =
     | SimpleTyp t1 -> t1
     | GenTyp (vl, t1) ->
             let s = instantiate' vl empty_subst in
+            e_list := check_list s !e_list;
+            w_list := check_list s !w_list;
             s t1
 and instantiate' vl t =
     match vl with
@@ -345,6 +436,7 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
                 | M.EQ ->
                         let v2 = new_var() in
                         let c3 = add_cond empty_cond v1 [TInt; TString; TBool; TLoc (TVar v2)] in
+                        e_list := [(s321 (TVar v1))] @ !e_list;
                         (s321, (append_cond (append_cond c1 c2) c3))
                 | _ -> (s321, append_cond c1 c2)
                 )
@@ -355,6 +447,7 @@ let rec m : typ_env -> M.exp -> typ -> (subst * cond) =
                 let env1 = subst_env s1 env in
                 let (s2, c1) = m env1 e1 (s1 t) in
                 let c2 = add_cond empty_cond v1 [TInt; TString; TBool] in
+                w_list := [(s2 (s1 (TVar v1)))] @ !w_list;
                 (s2 @@ s1, append_cond c1 c2)
         | M.MALLOC e1 ->
                 let v1 = new_var() in
@@ -412,6 +505,8 @@ let check : M.exp -> M.typ =
         let (s, c) = m [] e (TVar v) in
         if check_cond 0 c s
         then
+            let _ = check_wlist s !w_list in
+            let _ = check_elist s !e_list in
             (* let _ = prt (s (TVar v)) in *)
             convert_to_mtyp (s (TVar v))
         else
